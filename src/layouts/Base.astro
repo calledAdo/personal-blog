@@ -1,0 +1,54 @@
+---
+import '../styles/global.css';
+import ThemeToggle from '../components/ThemeToggle.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+}
+
+const { title, description } = Astro.props;
+const siteName = 'Research Notes';
+---
+
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <meta name="generator" content={Astro.generator} />
+    <title>{title}</title>
+    {description && <meta name="description" content={description} />}
+    {/* Set theme before paint to avoid a flash of the wrong color scheme. */}
+    <script is:inline>
+      (() => {
+        const stored = localStorage.getItem('theme');
+        const dark = stored
+          ? stored === 'dark'
+          : window.matchMedia('(prefers-color-scheme: dark)').matches;
+        document.documentElement.classList.toggle('dark', dark);
+      })();
+    </script>
+  </head>
+  <body class="min-h-screen bg-stone-50 text-stone-900 antialiased dark:bg-stone-950 dark:text-stone-100">
+    <header class="border-b border-stone-200 dark:border-stone-800">
+      <nav class="mx-auto flex max-w-3xl items-center justify-between px-6 py-5">
+        <a href="/" class="text-lg font-semibold tracking-tight">{siteName}</a>
+        <div class="flex items-center gap-6 text-sm text-stone-600 dark:text-stone-400">
+          <a href="/" class="hover:text-stone-900 dark:hover:text-stone-100">Articles</a>
+          <a href="/about" class="hover:text-stone-900 dark:hover:text-stone-100">About</a>
+          <ThemeToggle />
+        </div>
+      </nav>
+    </header>
+
+    <main class="mx-auto max-w-3xl px-6 py-10">
+      <slot />
+    </main>
+
+    <footer class="mx-auto max-w-3xl px-6 py-10 text-sm text-stone-500 dark:text-stone-500">
+      © {new Date().getFullYear()} {siteName}
+    </footer>
+  </body>
+</html>

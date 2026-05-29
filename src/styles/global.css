@@ -1,0 +1,27 @@
+@import "tailwindcss";
+@plugin "@tailwindcss/typography";
+
+/* KaTeX math styling (loaded once, applies to all rendered LaTeX). */
+@import "katex/dist/katex.min.css";
+
+/* Class-based dark mode: `dark:` variants apply when <html> has .dark. */
+@custom-variant dark (&:where(.dark, .dark *));
+
+:root {
+  --content-width: 48rem;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: ui-serif, Georgia, Cambria, "Times New Roman", serif;
+}
+
+/* Keep long display equations from overflowing on small screens. */
+.katex-display {
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.25rem 0;
+}

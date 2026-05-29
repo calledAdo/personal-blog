@@ -1,0 +1,46 @@
+---
+import Base from '../layouts/Base.astro';
+import { getCollection } from 'astro:content';
+
+// Hide drafts in production; show them while developing.
+const articles = (await getCollection('articles'))
+  .filter((a) => import.meta.env.DEV || !a.data.draft)
+  .sort((a, b) => b.data.date.valueOf() - a.data.date.valueOf());
+
+const fmt = (d: Date) =>
+  d.toLocaleDateString('en-US', { year: 'numeric', month: 'short', day: 'numeric' });
+---
+
+<Base title="Research Notes" description="Research articles and notes.">
+  <div class="mb-10">
+    <h1 class="font-sans text-3xl font-bold tracking-tight">Research Notes</h1>
+    <p class="mt-2 text-stone-600 dark:text-stone-400">Papers, notes, and things I'm thinking about.</p>
+  </div>
+
+  {articles.length === 0 ? (
+    <p class="text-stone-500">No articles yet.</p>
+  ) : (
+    <ul class="space-y-8">
+      {articles.map((article) => (
+        <li class="border-b border-stone-200 pb-8 last:border-0 dark:border-stone-800">
+          <a href={`/articles/${article.id}`} class="group block">
+            <div class="font-sans text-sm text-stone-500">
+              {fmt(article.data.date)}
+              {article.data.draft && (
+                <span class="ml-2 rounded bg-amber-200 px-1.5 py-0.5 text-xs text-amber-800 dark:bg-amber-900 dark:text-amber-200">
+                  draft
+                </span>
+              )}
+            </div>
+            <h2 class="mt-1 font-sans text-xl font-semibold tracking-tight group-hover:text-blue-700 dark:group-hover:text-blue-400">
+              {article.data.title}
+            </h2>
+            {article.data.abstract && (
+              <p class="mt-2 text-stone-600 dark:text-stone-400">{article.data.abstract}</p>
+            )}
+          </a>
+        </li>
+      ))}
+    </ul>
+  )}
+</Base>

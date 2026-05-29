@@ -1,0 +1,55 @@
+---
+title: "Welcome: Writing Math on This Blog"
+date: 2026-05-29
+abstract: "A quick tour of how to write articles with headings, formatting, code, and LaTeX math — inline and display."
+tags: ["meta", "latex"]
+authors: ["Your Name"]
+draft: false
+---
+
+This is a sample article. To publish a new one, drop another `.mdx` file in
+`src/content/articles/` and push to GitHub — the site rebuilds automatically.
+
+## Inline and display math
+
+Inline math sits in the text with single dollar signs, like the famous
+identity $e^{i\pi} + 1 = 0$ or the bound $\mathcal{O}(n \log n)$.
+
+Display math uses double dollar signs and renders centered on its own line:
+
+$$
+\int_{-\infty}^{\infty} e^{-x^2}\,dx = \sqrt{\pi}
+$$
+
+You can write aligned multi-line derivations too:
+
+$$
+\begin{aligned}
+\nabla \cdot \mathbf{E} &= \frac{\rho}{\varepsilon_0} \\
+\nabla \cdot \mathbf{B} &= 0 \\
+\nabla \times \mathbf{E} &= -\frac{\partial \mathbf{B}}{\partial t} \\
+\nabla \times \mathbf{B} &= \mu_0\mathbf{J} + \mu_0\varepsilon_0\frac{\partial \mathbf{E}}{\partial t}
+\end{aligned}
+$$
+
+## Formatting
+
+You get **bold**, *italic*, `inline code`, [links](https://astro.build), and
+lists:
+
+- First point
+- Second point, with math $\sum_{k=1}^{n} k = \frac{n(n+1)}{2}$
+- Third point
+
+> Block quotes work for highlighting a key result or a citation.
+
+### Code blocks
+
+```python
+import numpy as np
+
+def gaussian(x, mu=0.0, sigma=1.0):
+    return np.exp(-((x - mu) ** 2) / (2 * sigma**2)) / (sigma * np.sqrt(2 * np.pi))
+```
+
+That's the whole workflow: write Markdown, sprinkle in `$...$` for math, and push.
