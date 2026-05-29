@@ -13,7 +13,7 @@ const bibPath = 'src/content/references.bib';
 // https://astro.build/config
 export default defineConfig({
   // Set this to your real domain when you deploy (used for RSS / canonical URLs).
-  site: 'https://example.com',
+  site: 'https://personal-blog-d19.pages.dev',
   integrations: [mdx()],
   markdown: {
     remarkPlugins: [remarkMath],
