@@ -21,6 +21,7 @@
     "katex": "^0.17.0",
     "rehype-citation": "^2.3.2",
     "rehype-katex": "^7.0.1",
+    "remark-gfm": "^4.0.1",
     "remark-math": "^6.0.0",
     "tailwindcss": "^4.3.0"
   }

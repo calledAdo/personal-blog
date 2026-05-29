@@ -3,6 +3,7 @@ import { defineConfig } from 'astro/config';
 import mdx from '@astrojs/mdx';
 import tailwindcss from '@tailwindcss/vite';
 import remarkMath from 'remark-math';
+import remarkGfm from 'remark-gfm';
 import rehypeKatex from 'rehype-katex';
 import rehypeCitation from 'rehype-citation';
 
@@ -16,7 +17,7 @@ export default defineConfig({
   site: 'https://personal-blog-d19.pages.dev',
   integrations: [mdx()],
   markdown: {
-    remarkPlugins: [remarkMath],
+    remarkPlugins: [remarkGfm, remarkMath],
     // Order matters: resolve citations first, then render any math.
     rehypePlugins: [
       [
