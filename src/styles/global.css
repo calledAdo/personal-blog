@@ -25,3 +25,16 @@ body {
   overflow-y: hidden;
   padding: 0.25rem 0;
 }
+
+/* Bibliography rendered by rehype-citation (the [@key] reference list). */
+.csl-bib-body {
+  font-size: 0.9rem;
+  line-height: 1.6;
+}
+
+.csl-entry {
+  /* Hanging indent, the standard look for reference lists. */
+  padding-left: 1.5rem;
+  text-indent: -1.5rem;
+  margin-bottom: 0.6rem;
+}

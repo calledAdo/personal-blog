@@ -20,6 +20,7 @@ const siteName = 'Research Notes';
     <meta name="generator" content={Astro.generator} />
     <title>{title}</title>
     {description && <meta name="description" content={description} />}
+    <link rel="alternate" type="application/rss+xml" title={siteName} href="/rss.xml" />
     {/* Set theme before paint to avoid a flash of the wrong color scheme. */}
     <script is:inline>
       (() => {
@@ -37,6 +38,7 @@ const siteName = 'Research Notes';
         <a href="/" class="text-lg font-semibold tracking-tight">{siteName}</a>
         <div class="flex items-center gap-6 text-sm text-stone-600 dark:text-stone-400">
           <a href="/" class="hover:text-stone-900 dark:hover:text-stone-100">Articles</a>
+          <a href="/tags" class="hover:text-stone-900 dark:hover:text-stone-100">Tags</a>
           <a href="/about" class="hover:text-stone-900 dark:hover:text-stone-100">About</a>
           <ThemeToggle />
         </div>
