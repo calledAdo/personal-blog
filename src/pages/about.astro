@@ -1,13 +1,42 @@
 ---
 import Base from '../layouts/Base.astro';
+
+const links = [
+  { label: 'GitHub', href: 'https://github.com/calledAdo' },
+  { label: 'Email', href: 'mailto:destinyadokiye8@gmail.com' },
+];
 ---
 
-<Base title="About" description="About this blog and its author.">
+<Base title="About" description="About Adokiye Okoro and this research blog.">
   <div class="prose prose-stone max-w-none prose-headings:font-sans dark:prose-invert">
     <h1>About</h1>
+
     <p>
-      Write a short bio here. This page is a plain Astro file — edit
-      <code>src/pages/about.astro</code> to change it.
+      I'm <strong>Adokiye Okoro</strong>, a student at
+      <strong>Obafemi Awolowo University</strong> studying
+      Quantitative Finance, Computing, and Mathematics.
     </p>
+
+    <p>
+      This is my personal research blog, where I post papers, notes, and
+      work-in-progress on the topics I'm exploring — at the intersection of
+      mathematics, computation, and financial modeling.
+    </p>
+
+    <h2>Interests</h2>
+    <ul>
+      <li>Quantitative finance and financial modeling</li>
+      <li>Applied mathematics and probability</li>
+      <li>Scientific computing</li>
+    </ul>
+
+    <h2>Elsewhere</h2>
+    <ul>
+      {links.map((link) => (
+        <li>
+          <a href={link.href}>{link.label}</a>
+        </li>
+      ))}
+    </ul>
   </div>
 </Base>
