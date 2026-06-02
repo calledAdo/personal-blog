@@ -1,0 +1,683 @@
+---
+abstract: An operational, computable definition of a market narrative as a time-indexed, belief-weighted causal graph of measurable events, each carrying a two-dimensional belief state — a likelihood together with a degree of confidence. The paper develops the full belief calculus (subjective-logic opinions, evidence fusion with a redundancy guard, three-channel causal propagation, and narrative decay) and proves the belief dynamics are stable, with sustained conviction equal to the ratio of evidence inflow to forgetting rate.
+authors:
+  - Okoro Adokiye
+date: 2026-06-02T00:00:00Z
+draft: false
+tags:
+  - narrative-economics
+  - subjective-logic
+  - causal-graphs
+  - decision-theory
+  - mathematics
+title: A Formal Theory of Narratives as Belief-Weighted Causal Graphs
+---
+
+## Abstract
+
+Economic narratives demonstrably move asset prices, yet the colloquial notion of a narrative — a story the market tells itself — is too vague to be measured, updated against evidence, or reasoned over by a formal system. This paper develops an operational definition that makes a narrative *computable*. Drawing together Shiller's narrative economics, Beckert's fictional expectations, Tuckett's Conviction Narrative Theory, Pearl's causal networks, and Jøsang's subjective logic, we define a narrative as a time-indexed, belief-weighted directed acyclic (hyper)graph whose vertices are *measurable events* and whose edges are *typed causal dependencies*. Each event carries a two-dimensional belief state — a likelihood together with a degree of confidence — so that "60% and certain" and "60% and guessing" are formally distinct objects.
+
+We then give this object a complete belief calculus. A subjective-logic opinion encodes, bijectively, a distribution over the unknown probability of each event, separating *projected probability* (its mean) from *conviction* (its inverse spread). Evidence enters through a *mandate* that reads outside-world signals into discounted evidence items; a separate, universal *fusion* stage combines them, with a redundancy guard that keys independence on the underlying observation rather than the reporting source, so that an echoed story cannot manufacture confidence. Influence propagates across three distinct causal channels — *level* (mediation), *strength* (moderation), and *base-rate* (prior shift) — each transmitting a parent's confidence-gated surprise to its children. Finally, evidence *decays*: an unrefreshed opinion drifts back toward ignorance, and we prove that decay alone makes the belief dynamics a contraction with a unique, stable fixed point at which sustained conviction equals the ratio of evidence inflow to forgetting rate. Connecting these beliefs to tradeable instruments — expression, sizing, and price feedback — is left to future work; the present paper fixes the *belief layer*.
+
+## Introduction
+
+Narratives move markets. Booms, busts, and asset-price swings are, on the modern view, partly driven by contagious stories that participants tell one another rather than by fundamentals alone [Shiller 2017, 2019]. If a narrative is a genuine causal force on prices, then a reasoning system that wishes to act on one needs to hold it as an *object* — something it can represent, attach evidence to, and update. The obstacle is that the everyday meaning of "narrative" is operationally useless: a story, however vivid, cannot be fused with data or reasoned over until it is pinned down precisely enough to be measured.
+
+This paper supplies that object. Our central claim is that a narrative, *when its constituent events are measurable*, is a fully computable belief object: it can be formally represented and updated against evidence by a single coherent calculus — a structured, two-dimensional belief state over a causal graph that *forms*, *fuses*, *propagates*, and *decays*. The construction proceeds from first principles and is positioned deliberately at the intersection of five mature literatures, so that each component inherits a rigorous parent rather than being invented *ad hoc*.
+
+The framework turns on one hinge, which we call *regime separation*. *Which* narrative to hold — which events, linked how — is a choice made under genuine radical (Knightian) uncertainty, where no probability distribution over "which causal story is true" exists; this is the domain of human judgment and conviction. But *given* a fixed structure of measurable events, the likelihood of each event and our confidence in it *do* exist and can be updated mechanically. The boundary between the two regimes is exactly the requirement that every event be measurable, and it is what makes a narrative *computable* rather than merely *thinkable*.
+
+The development is in four parts. **Part I** constructs the object — the belief-weighted causal (hyper)graph, a typology of its events, the three bases of causal modification, and the *mandate* that reads the outside world — and fixes the framework's explicit claims and objectives. **Part II** gives each event's belief state a precise calculus via subjective logic, separating likelihood from confidence and showing the object is a distribution over probabilities. **Part III** specifies the dynamics: how raw evidence becomes an opinion, how independent and redundant evidence are fused, and how an update at one event propagates through the causal edges. **Part IV** closes the belief calculus with *narrative decay* — the forgetting of evidence as it ages — and proves the resulting dynamics are stable. Throughout, *acting on* the belief object in a market — expression, sizing, and price feedback — is held separate and left to future work, so the core theory hard-codes no single way of trading a narrative.
+
+## Part I — What Is a Narrative?
+
+### 1.1 The problem of definition
+
+Before a narrative can be *acted on*, it must be *defined* precisely enough to be measured and updated. The colloquial meaning of "narrative" — a story the market is telling itself — is suggestive but operationally useless: it cannot be fused with evidence or reasoned over. Our first task is therefore to move from the **descriptive** conception of a narrative inherited from economics and sociology to an **operational** one that a reasoning system can manipulate. *(One concrete way of acting on the result — pricing and sizing positions in a market — is left to future work and deliberately kept outside the core theory.)*
+
+We build the definition in three layers, each tightening the previous.
+
+### 1.2 Layer 1 — The descriptive conception (narrative as contagious belief)
+
+The modern economic treatment of narratives begins with **Shiller's narrative economics** [Shiller 2017, 2019]. Shiller defines an economic narrative as a *contagious story* that spreads through a population and alters economic behavior — booms, busts, recessions, and asset-price movements are, on this view, partly driven by the stories market participants tell one another. Shiller borrows the mathematics of epidemiology (SIR-type contagion) to model how a narrative's prevalence rises and decays over time.
+
+This gives us two foundational claims we adopt wholesale:
+
+1. **Narratives are causal forces on prices**, not merely epiphenomena of fundamentals.
+2. **Narratives have dynamics** — they spread, peak, and decay, and so are *time-indexed* objects rather than static facts.
+
+But Shiller's conception is *descriptive*: it tells us narratives matter and that they spread like contagions, but it does not tell us what a narrative *is* as an object an agent can reason with. For that we need the decision-theoretic layer.
+
+### 1.3 Layer 2 — The decision-theoretic conception (narrative as the currency of thought)
+
+The second layer comes from work on decision-making under **radical (Knightian) uncertainty** — situations where outcomes cannot be exhaustively enumerated and objective probabilities cannot be assigned.
+
+- **Beckert's *fictional expectations*** [Beckert 2016] argues that economic actors, facing an unknowable future, act on *imagined future states of the world together with beliefs about the causal mechanisms leading to those states.* These imagined futures are sustained by narratives. Crucially for us, Beckert's "fictional expectation" is already a **(future state, causal mechanism)** pair — the seed of a causal structure.
+- **Tuckett & Nikolic's Conviction Narrative Theory (CNT)** [Tuckett & Nikolic 2017; Johnson, Bilovich & Tuckett 2023] makes the sharpest claim for our purposes: *narratives, not probabilities, are the currency of thought.* Under radical uncertainty, actors construct **conviction narratives** — structured causal hypotheses — that let them (i) draw on beliefs and causal models, (ii) *simulate* the outcomes of actions, and (iii) feel *convinced enough to act.* CNT was developed precisely by studying how fund managers cope with uncertain markets.
+
+CNT hands us two of the three things our belief object needs:
+
+1. A narrative is a **structured causal hypothesis** (not a single proposition, but a linked set of causal claims) — this motivates a *graph* representation.
+2. Acting requires **conviction**, which is *distinct from probability.* This is the conceptual seed of our later separation between *probability* (how likely) and *confidence/conviction* (how sure).
+
+### 1.4 Layer 3 — The operational definition (narrative as a belief-weighted causal DAG)
+
+We now fix the definition we will use throughout. Combining Shiller's *dynamics*, Beckert's *(state, mechanism)* pairs, and CNT's *structured causal hypothesis*, we define:
+
+**Definition 1 (Narrative).** A *narrative* is a time-indexed, directed acyclic (hyper)graph $N = (V, E, M, Z^+, Z^-)$ in which **every vertex and every edge is itself a typed tuple** — the belief state lives *inside* each vertex and the weights *inside* each vertex and edge, rather than as separate global labelings:
+
+- each **vertex** $v \in V$ is an event-tuple $v = \langle q, \omega, w_N \rangle$: a truth-apt, resolvable **proposition** $q$ (conditions M1–M2, §1.4.1), a **belief state** $\omega = (b, u, a)$ — a subjective opinion carrying a probability *together with* a degree of confidence (Part II; disbelief $d = 1 - b - u$ is derived) — and a **narrative weight** $w_N \in [0,1]$ measuring the stake the narrative places on the event's own outcome ($w_N = 0 \iff$ phantom, §1.4.2);
+- each **edge** $e \in E$ is a directed pair $(p \to \text{target})$ — a **parent** $p$ and a **target** that is a child *vertex* for bases B1/B3 but *another edge* for B2 (which is why the object is a hypergraph) — carrying $\langle \beta, w, k \rangle$: a **basis** $\beta \in \{B1, B2, B3\}$ naming the channel of influence (§1.4.3), a **dependency weight** $w \in [0,1]$, and a **transition kernel** $k$ that recomputes the target's state from the parent's *current* opinion. The kernel alone fixes the *direction* of influence, so the edge carries no separate sign (Part III);
+- $M = (\mathcal{S}, \mathcal{R}, f)$ is the **mandate**: the **signal set** $\mathcal{S}$ (all admissible signals bearing on the DAG's vertices — scope, i.e. horizon, venues, and admissible event-space, enters as the membership conditions on $\mathcal{S}$), a **source set** $\mathcal{R}$ of admissible sources each with a reliability (source *correlation* is deliberately **not** here — it is a fusion-stage concern, §3.3), and a **reading map** $f : \mathcal{S} \times V \to E$ that turns a (signal, vertex) pair into an **evidence item** (Def 6) — the signal carries its own source (Def 2E), which $f$ looks up in $\mathcal{R}$ to apply the trust discount *inside* $f$, so its output is already discounted. The mandate *only reads*; combining evidence is the separate, universal **fusion** stage (Defs 7–9), so all subjectivity lives in $M$ (§1.4.4, Part III);
+- $Z^+, Z^- \subseteq V$ are the **terminal sets**: a vertex is **terminal** exactly by membership — $Z^+$ (**success culminations**) and $Z^-$ (**failure conditions**) collect the events whose resolution *decides the whole narrative*, success or failure, rather than merely updating local beliefs (§1.4.2).
+
+Three features distinguish this from a plain probability or a sentiment score:
+
+- **It is structural.** A narrative is a *set of causally linked events*, not a single claim. This lets evidence about one event propagate to others (Part III) — the formal echo of CNT's "structured causal hypothesis."
+- **It is epistemic in two dimensions.** Each event carries *both* a likelihood *and* a confidence. A narrative we believe at 60% with high confidence is a different object from one we believe at 60% with almost no confidence.
+- **It is latent and observable only through evidence.** The narrative itself is an unobserved (latent) causal structure; we never see it directly, only its *traces* in outside-world evidence (news, on-chain data, attention). Estimating and updating the belief state from those traces is the central inferential task.
+
+The remainder of Part I boxes each component of the tuple in turn: the **vertices** $V$ (§1.4.1–1.4.2), the **edges** $E$ (§1.4.3), and the **mandate** $M$ (§1.4.4); a worked example (§1.4.5) instantiates them, and §1.4.6 collects the **well-formedness conditions** that bind them. Two pieces are deferred: the belief state $\omega$ internal to each vertex gets its calculus in Part II, and the two weights — the per-vertex **narrative weight** $w_N$ and the per-edge **dependency weight** $w$ (which a single-weight notation would conflate) — get their roles in sizing (future work on the market layer) and propagation (Part III) respectively.
+
+### 1.4.1 What "measurable" means
+
+The word *measurable* in Definition 1 (and in Claim 1) is load-bearing, so we fix it precisely. It does **not** mean that the event's probability is *known*. It is a statement about the event's *logical form* — that it is the kind of object to which a probability and a confidence can be attached and updated — not about our current state of knowledge.
+
+The formal anchor is measure-theoretic: an *event* is properly an element of a $\sigma$-algebra, i.e., something to which a probability measure *can* assign a value. A vague story belongs to no $\sigma$-algebra — there is nothing for a measure to grasp. Operationally this resolves into three conditions.
+
+**Definition 2 (Measurable event).** A proposition $e$ is a *measurable event* if:
+
+- **(M1) Truth-aptness.** $e$ denotes a definite state of the world that is either true or false — not vague and not a value judgment.
+- **(M2) Resolvability.** There exists a designated resolution procedure (an oracle $O$) and a finite horizon $T$ such that by time $T$, $O$ publicly outputs the truth value of $e$.
+- **(M3) Evidence-bearing.** Prior to $T$ there exist observable signals $s$ whose conditional distribution depends on the truth value of $e$ — i.e. $P(s \mid e\text{ true}) \ne P(s \mid e\text{ false})$ — so that belief in $e$ can be updated *before* resolution.
+
+Each condition discharges a specific job in the framework:
+
+- **M1** makes the belief state well-posed: the subjective-logic constraint $b + d + u = 1$ is meaningful only if there is a definite proposition for belief and disbelief to be *about*. M1 is the step that converts a fuzzy Shillerian/CNT narrative element into a Beckert *(state, mechanism)* node.
+- **M2** is the precondition for *resolution* — for an event ever to close and a position ever to settle.
+- **M3** is what makes an event *traceable*: a narrative is unobserved but knowable through evidence (§1.4), and M3 is the assumption that interim signals leak. An event resolvable at $T$ but giving no interim signal (a coin toss, a sealed envelope) is measurable-at-resolution yet informationally inert — its belief sits at the base rate until it suddenly jumps. As §1.4.2 shows, such an event cannot be *focal* (the narrative can stake nothing on a belief that never moves), but it may still serve as a *phantom* node whose resolution drives others.
+
+*Examples.* "Crypto will go mainstream" fails M1 (no fact of the matter). "The market feels bullish" fails M1 (value judgment). "A spot BTC ETF is approved by the SEC before 2024-06-30" satisfies all three: it is truth-apt (M1), resolvable via the SEC docket by a fixed date (M2), and evidence-bearing through filings, official statements, and lobbying news (M3).
+
+**Measurability is role-dependent.** Not every event must satisfy all three conditions. **M1 ∧ M2 are universal** — every event, whether the narrative stakes on it or not, must denote a definite proposition that resolves by a finite horizon. **M3 is required only of *focal* events:** without interim signals an event's belief can never move off its prior before resolution, so the narrative has nothing to act on. An event failing M3 is therefore not discarded — it is *demoted* from focal to **phantom** (§1.4.2), a node included for its causal influence rather than for a stake in its outcome. We call an event satisfying all three *fully measurable* and one satisfying only M1 ∧ M2 merely *resolvable*.
+
+*(How a focal event is connected to a tradeable instrument — market-resolvability, proxy fidelity, and sizing — is left to future work on the market layer, and is deliberately kept out of the core theory so the framework does not hard-code any one way of acting on a narrative.)*
+
+### 1.4.2 The vertices V — a typology of events
+
+Definition 1 makes the narrative a graph whose vertices are measurable events, but treats all vertices alike. In practice events play distinct **structural** and **economic** roles, and the framework's expressiveness depends on naming them. This subsection supplies that typology and grounds it in prior work, because the classes are not *ad hoc*: each falls out of two orthogonal axes, and each has a parent in an existing literature.
+
+**What an event is (and is not).** We take an *event* to be not a static proposition but a *segmentable unit of change* with temporal extent and internal structure. Cognitive science treats events exactly this way: [Zacks & Tversky 2001] show that people organize events into both **taxonomies** (kinds of event) and **partonomies** (part–whole nesting), structured by *causal* and *goal* relations. This licenses two things at once for us: a *typology* of events (the taxonomy) and the *graph* of causal dependencies between them (the causal organization). An event in our sense is therefore always (i) categorizable by role, (ii) potentially nested, and (iii) embedded in causal structure.
+
+Narratology already distinguishes *load-bearing* from *supporting* events, which prefigures our economic axis. In Barthes' terms, **cardinal functions (nuclei)** are hinge events that cannot be removed without altering the story — the genuine branch points — whereas **catalysers** merely elaborate and fill them in; Chatman recasts these as **kernels** and **satellites** [Barthes 1966; Chatman 1978]. A narrative's *risk* lives in its kernels; its satellites color and transmit but carry no plot weight of their own. Our focal/phantom distinction is the refinement of this intuition.
+
+We organize events along two **orthogonal axes** — a **focus** axis (does the narrative place a stake on the event's *own* outcome?) and a **lifecycle** axis (does the event decide the narrative?) — with a third, cross-cutting **causal** property (does the event have children it influences?).
+
+**Definition 2A (Focus role — the stake axis).** Every event is *resolvable* (M1 ∧ M2). An event is
+
+- **focal** if the narrative places a stake on *its own outcome* — it carries a **narrative weight** $w_N \in (0,1]$, the importance the narrative assigns to whether *this* event resolves true or false. A focal event must additionally be *evidence-bearing* (M3): without interim signals its belief can never move off the prior before resolution, so there is nothing for the narrative to act on. *(How a focal event is expressed and sized in a market is left to future work, not part of the core theory.)*
+- **phantom** if the narrative places *no* stake on its outcome ($w_N = 0$) but depends on its resolution only for *influence* on other events. A phantom may or may not be evidence-bearing (M3); the defining fact is that no stake rides on its outcome.
+
+The two are exhaustive and mutually exclusive: **no event is both focal and phantom** (they are the two values of one axis).
+
+The dividing line is the *stake*, not the existence of a market — correcting a natural misreading. An event can be perfectly resolvable and still *phantom* if the narrative cares about it only for its causal influence (a coin-toss catalyst is the limiting case). The phantom re-inserts causal structure the focal set omits — the role of a **latent (hidden) variable in a Bayesian network** [Pearl 1988]: modelling the common driver stops two focal events' co-movement from being mis-wired as a spurious direct link.
+
+**Definition 2B (Lifecycle role — the termination axis).** An event is
+
+- **terminal** if its resolution *permanently decides the whole narrative*, settling it to **success** or **failure**; or
+- **ordinary** if its resolution is *local* — it updates beliefs and may settle a position, but the narrative continues.
+
+Terminal events come in two kinds. A **terminal-success** event is the narrative's *culmination* — typically the temporally **furthest** node(s) in the DAG, whose confirmation means the thesis has succeeded (usually focal: the narrative's stake lives here). A **terminal-fail** event is a **failure condition**: it may sit **anywhere** in the structure, may **have children**, and may be **focal or phantom** — its firing triggers the AGM **contraction** of §3.6, collapsing every unresolved opinion to its prior. The canonical terminal-fail is a phantom: a "regulatory ban" the narrative stakes nothing on but whose occurrence kills the thesis.
+
+So *terminal* is a statement about the narrative's **life**, not the graph's topology: a terminal event is **not** necessarily a sink, and a sink is not necessarily terminal. The topological property is separate and cross-cutting.
+
+**Causal property (cross-cutting).** An event is a **modifier** if it has outgoing edges (children whose belief it shifts) and a **leaf** otherwise. This property — orthogonal to both axes — is what the propagation rules of Part III act on; terminal-fail events are frequently modifiers, since they sit mid-graph.
+
+The focus × lifecycle axes give a 2×2 with **all four cells populated**:
+
+|                       | **Ordinary** (local resolution)        | **Terminal** (decides the narrative)              |
+|-----------------------|----------------------------------------|---------------------------------------------------|
+| **Focal** ($w_N>0$)   | a staked event (a *kernel* you hold)   | a **success culmination** the narrative stakes on |
+| **Phantom** ($w_N=0$) | a pure **influence** node              | a **failure condition** (e.g. regulatory ban), unstaked |
+
+An event earns its place only if it does at least one kind of work:
+
+**Lemma 1 (Inclusion).** A node contributes to the narrative iff it is **focal** (the narrative stakes on its outcome), **a modifier** (influences children), or **terminal** (decides the narrative). A node that is none of these — phantom, ordinary, *and* a leaf — changes no belief and no narrative outcome, and is pruned. In particular every *useful phantom* is a modifier or a terminal-fail. $\blacksquare$
+
+This sharpens the intuition that "a phantom is usually a modifier": a phantom justifies its presence only by *influencing children* or *deciding failure*.
+
+**A refinement among phantoms.** Every phantom is resolvable (M1 ∧ M2); they split by whether they are *evidence-bearing* (M3):
+
+- an **evidence-bearing phantom** satisfies M3 — its belief moves continuously as signals arrive and then resolves, feeding children a *stream* of small updates (e.g. "no SEC delay notice before March 30," tracked through filings);
+- a **pure-jump (shock) phantom** fails M3 — no interim signal discriminates its outcome, so its belief sits at the base rate until resolution, then *jumps* to 0 or 1 and injects one large update into its children. These are typically **exogenous** (root) nodes whose parents do not move them but whose resolution sharply raises or lowers their children's likelihood. Propagation needs no new rule: at resolution the phantom's level $P_p$ jumps to 0 or 1 and its children are recomputed through the same B1/B2/B3 edges (§1.4.3, Part III), the only difference from an evidence-bearing node being that the move arrives *discretely at resolution* rather than *continuously*.
+
+This is the formal home for the coin-toss intuition: an event can fail M3 and still be a legitimate, useful node — never focal (its belief cannot move before resolution, so the narrative can stake nothing on it), but a perfectly good phantom whose resolution drives the rest of the graph.
+
+### 1.4.3 The edges E — dependencies and the bases of modification
+
+The vertices fix *what* the narrative is about; the edges $E$ fix how events constrain one another. An edge is a directed, weighted causal dependency, and it must also declare *what about the parent modifies the child*: a modifier does not act in a single way. Each modifier edge $p \to c$ carries a **weight** $w \in [0,1]$, a **basis** naming the channel of influence, and — bundling the propagation semantics into the edge itself — a **transition kernel** $k$ mapping the parent's current opinion and the target's current state to the target's updated state; $k$ alone fixes the *direction* of influence, so the edge carries no separate sign. For B1 and B3 the target is the child *vertex* ($k : \Omega_p \times \Omega_c \to \Omega_c$); for B2 it is *another edge*, whose gain $k$ rescales (the B2 discussion below) — which is what lifts the object from a DAG to a hypergraph. Drawing the distinction from causal **mediation vs. moderation** [Baron & Kenny 1986; Pearl 2001], we admit three bases:
+
+**Definition 2C (Modifier edge and its bases).** A modifier edge $p \to c$ transmits the parent's update to the child by one of:
+
+- **(B1) Level basis — mediation / direct effect.** A *confident deviation* of the parent's projected probability from its own prior injects *belief* (a concordant kernel) or *disbelief* (a discordant kernel) mass into the child, proportional to $w$ times that deviation. Additive on the child's belief simplex. *(This is the basis a baseline implementation realizes — here recast as level-driven: the kernel emits synthetic evidence whose strength is the parent's deviation $P_p - a_p$ discounted by conviction $1 - u_p$, §3.4.)*
+- **(B2) Strength basis — moderation / interaction.** The parent does not move the child's level; it scales *how strongly* other evidence or another edge bears on the child — modulating the *gain*. Multiplicative on incoming edge-weight or evidence discount. (E.g. "regulatory clarity resolving true makes ETF-flow news *far more decisive* for the price event.")
+- **(B3) Base-rate basis — prior shift.** The parent moves the child's *base rate $a$* — the default the uncommitted mass $u$ reverts to (Definition 4) — rather than its committed belief. Used when a driver changes the *structural prior* of an outcome without being direct evidence for any particular resolution.
+
+Each kernel carries its own *directional sense* — B1 and B3 push the child toward belief or disbelief, B2 amplifies or dampens another channel — so direction lives in the kernel $k$, not in a separate edge field. The formal propagation rules are derived in Part III; here we fix the *vocabulary* and examine the two non-trivial bases that a level-only model omits.
+
+**B2 (strength / moderation) is an edge that acts on another edge.** Unlike B1 and B3, whose target is a *node*, a B2 edge's target is a *channel* — another incoming edge or evidence stream — whose **gain** it multiplies. Three consequences follow:
+
+1. **It needs something to moderate.** A B2 modifier with no other channel into the child does nothing; moderation is meaningless without a relationship to moderate.
+2. **It has its own polarity, and cannot assert truth.** A B2 edge *amplifies* (gain $>1$) or *dampens* (gain $<1$) a channel — it can turn evidence up or mute it, but cannot by itself push the child toward true or false.
+3. **It lifts the structure beyond a plain DAG.** Because a B2 edge points at an *edge*, the object is formally a hypergraph (edges over edges); propagation must therefore resolve moderators, and the gains they set, *before* the level edges they govern (Part III). A "regulatory clarity" parent does not raise the price event — it makes ETF-inflow evidence *count for far more* in the price event: the same data, read through a larger gain.
+
+**B3 (base-rate / prior shift) is the structural-prior channel.** Because the projected probability is $P = b + a\cdot u$ (Definition 4), a B3 shift acts **only through the uncommitted mass**: it is felt in full when the child is ignorant ($u = 1 \Rightarrow P = a$) and **washes out as the child gathers its own evidence** ($u \to 0 \Rightarrow a\cdot u \to 0$). Use B3 when a driver moves a *whole class* of outcomes structurally — a rising tide — rather than supplying evidence for one event: an accommodative regime lifts the prior on *every* prospective approval without being evidence about any particular one. This is exactly what separates it from B1, which is specific, sticky evidence about a *single* child.
+
+The three bases are genuinely distinct relations, not three names for one — their fingerprints differ. Ask what each does to a child with *no other evidence* ($u = 1$) versus as that child later gathers its *own* evidence ($u \to 0$):
+
+| Basis | Acts on | Child with **no other evidence** ($u = 1$) | As child gains its **own** evidence ($u \to 0$) |
+|-------|---------|--------------------------------------------|-------------------------------------------------|
+| **B1** Level | belief/disbelief mass $b, d$ | **moves $P$** (mass injected regardless) | **persists** — injected mass stays in $b$ |
+| **B2** Strength | gain on *other* edges | **no effect** (nothing to amplify yet) | **grows** — it scales the incoming evidence |
+| **B3** Base-rate | base rate $a$ | **moves $P$ fully** ($P = a$) | **washes out** — $a\cdot u \to 0$ |
+
+A level modifier (B1) is *sticky*; a base-rate modifier (B3) *fades* as the child learns; a strength modifier (B2) is *inert until there is something to amplify.* A baseline implementation realizes only B1; B2 and B3 are the expressive headroom the typology opens.
+
+**A picture for the three kernels.** It helps to see what each kernel *does* to a child's opinion. Picture the child as a glass whose contents are its belief state: **water** is belief $b$ (reasons the event is true), **sand** is disbelief $d$ (reasons it is false), and the **empty space** is uncertainty $u$; the glass is always full, $b + d + u = 1$. One thing sits *outside* the glass — a **tilt** under it, the base rate $a$, deciding which way the empty space leans when no evidence has committed. The three kernels are then three physically distinct actions:
+
+- **B1 pours into the glass.** A concordant kernel adds water, a discordant one adds sand, in an amount set by the parent's confident deviation. Once poured it *stays* — which is why B1 is *sticky*. (An approval pours belief directly into "the price rises.")
+- **B3 tilts the table.** It adds neither water nor sand; it moves the base rate $a$ so the empty space leans more toward true (or false). Its whole effect therefore lives in the empty space — felt fully on an ignorant child ($u = 1$, where $P = a$) and *washing out* as the glass fills with the child's own evidence ($u \to 0$). (An accommodative regime lifts the default likelihood of *every* approval.)
+- **B2 turns the knob on another hose.** It touches this glass not at all; it reaches over and widens or narrows the *gain* on a **different** edge feeding the child, so the same incoming evidence pours faster or slower. With no other hose flowing it does nothing — *inert until there is something to amplify*. (The regime makes inflow news *count for more*.)
+
+All three read the parent through a single quantity — its **confident deviation** $(1 - u_p)(P_p - a_p)$, conviction times surprise-relative-to-prior — so a parent that is ignorant, or merely sitting at its own prior, moves no child at all (Proposition 5, Part III).
+
+### 1.4.4 The mandate M — the interpretive frame
+
+The mandate $M$ is the only component of the tuple that is not a graph object. It is the trader's worldview made operational: it fixes *which* events are in scope, *which* outside-world signals count as evidence, and *how* those signals are read.
+
+**Definition 2D (Mandate).** The mandate is a triple $M = (\mathcal{S}, \mathcal{R}, f)$ where $\mathcal{S}$ is the **signal set** — the set of all admissible signals bearing on the vertices of *this* narrative DAG, with **scope** (horizon, venues, admissible event-space) entering as the conditions for membership in $\mathcal{S}$ (a signal outside scope is simply not in $\mathcal{S}$); $\mathcal{R}$ is the **set of admissible signal sources**, each carrying a **reliability** weight (which channels count, and how far each is trusted) — source *correlation* (which sources echo which) is deliberately **not** part of the mandate but a property used later, at the fusion stage (§3.3); and $f$ is the **reading map** $f : \mathcal{S} \times V \to E$ sending a (signal, vertex) pair to an **evidence item** $(s^+, s^-, h, \tau)$ (Def 6) — support, refutation, or ambiguity. The signal carries its own source $\mathrm{src}_s$ (Def 2E), which $f$ looks up in the source set $\mathcal{R}$ for that source's reliability; the **trust discount is therefore applied inside $f$**, so $f$'s output is an **already-discounted** evidence item. The mandate **only reads**: it *produces* evidence, it does not *combine* it. Combining is the separate, universal **fusion** stage (Defs 7–9), so the mandate is the entire *subjective* surface — $\mathcal{S}$ delimits, $\mathcal{R}$ trusts, $f$ interprets — while everything downstream of the evidence item $E$ is fixed for every narrative. $M$ must be **surjective onto the focal events**: every focal (M3) event is read by at least one admissible signal in $\mathcal{S}$ under $f$.
+
+The surjectivity condition is the formal hinge between the mandate and measurability. M3 (evidence-bearing) is a property of the *world* — signals exist — but a signal is only *usable* if the mandate admits and interprets it. A focal event therefore needs **both** M3 and a mandate channel: the world must leak, and the mandate must listen. An in-scope event with no admissible channel cannot be updated, hence cannot be focal (§1.4.1).
+
+**Signal vs. event — the same type, but a signal is *not* a measurable event.** Definition 2D admits *signals* through the source set $\mathcal{R}$ but leaves the object itself informal, and it is easy to suspect a signal and an event are the same thing. They share a *type* — both rest on a truth-apt proposition (M1) — but they sit at opposite epistemic stages, and the difference is sharper than it first looks: **a signal need not be a measurable event.**
+
+**Definition 2E (Signal).** A *signal* is an **observed, attributed proposition**: a triple $s = \langle q_s, t_s, \mathrm{src}_s \rangle$ where $q_s$ is a truth-apt statement (M1) about a state of the world indexed to a **past or present** time, $t_s \in \{\top, \bot\}$ is its **already-realized** truth value, and $\mathrm{src}_s \in \mathrm{Src}$ is the **source** that emitted it — the provenance the mandate's source set $\mathcal{R}$ trusts (Def 2D) and that the fusion stage uses to judge independence (§3.3). The same statement and truth value from a *different* source is a *different* signal; the **observation-keyed fusion rule** (§3.3) keys redundancy on the *statement*, using the source only to decide which reports independently corroborate. A signal is required to satisfy **only M1**; it is **not** required to be a measurable event. M2 (a *future* oracle and horizon) does not apply — the signal has *already* resolved, by the act of observation — and **M3 (evidence-bearing) does not apply at all**: M3 asks whether interim signals leak about an *unrealized* truth, but a signal's truth is realized, so there is nothing left to predict about it. Indeed a signal **is** the leaked evidence M3 speaks of *for some other event*.
+
+This is exactly the asymmetry between the two roles. An **event** — the proposition we *predict*, the *object* of an opinion $\omega$ — must be measurable: M1 ∧ M2 to resolve at all, plus M3 to be *focal*. A **signal** — the proposition we have *observed*, an *input* — needs only M1 and the fact of observation. M3 is the hinge between them: it asserts that an event *emits* signals ($P(s \mid e) \ne P(s \mid \neg e)$), and those emitted signals **need not themselves be M3-events**. The two roles are joined by **resolution**, but only one way: when an event reaches its horizon $T$ (M2) and its truth realizes, it *becomes* a signal — *today's event is tomorrow's signal* — yet the signal class is strictly larger, since most signals (a speech, an on-chain flow, a tweet) are raw observations that were **never** nodes in the graph. Finally, graded confidence does **not** live in $t_s$, which is crisp; it lives in the **reliability of the reporting source** in $\mathcal{R}$, which the trust discount $\tau$ (Def 6) turns into how much mass the signal may commit — the formal reason a rumour and a regulated filing of identical content move belief by different amounts. So M3's "observable signals $s$" (§1.4.1) and the mandate's source set $\mathcal{R}$ name the same objects from two sides: **M3** says the *world* emits them; the mandate's **$\mathcal{R}$** and reading map **$f$** decide which are *heard* and *how*.
+
+**How a signal becomes a belief update.** The three components form a *pipeline* that a single incoming signal passes through. Take the signal *"the SEC chair gives a speech praising crypto innovation,"* against the example narrative of §1.4.5:
+
+1. **$\mathcal{S}$ — is it an admissible signal?** Membership in the signal set is the first gate. The speech concerns U.S. crypto regulation within the horizon, so it lies in $\mathcal{S}$ and passes; a European football result is not in $\mathcal{S}$ and is turned away at the door. $\mathcal{S}$ situates and times the narrative (it encodes the narrative's scope) but asserts nothing inside it.
+2. **$\mathcal{R}$ — whose word is it, and how much do I trust it?** An official SEC statement is a top-tier source (high reliability); the identical words on an anonymous forum would be discounted toward zero or excluded. This reliability becomes the trust factor $\tau$ (Def 6): a trusted source's evidence is allowed to commit mass, while an untrusted source's evidence evaporates into uncertainty rather than moving belief.
+3. **Interpretation — what does it mean, and which way?** The interpretation step of $f$ reads the (signal, event) pair as *support*, *refute*, or *ambiguous*, with a strength — here, moderate support for "the SEC turns accommodative," marked somewhat ambiguous because a speech is not a ruling. Two traders may admit the same signal and read it oppositely; this interpretation step is where worldview lives.
+
+These three stages *are* the reading map $f$: the admissibility gate (is the signal in $\mathcal{S}$?), the source trust (look up the signal's own $\mathrm{src}_s$ in the source set $\mathcal{R}$), and the interpretation step compose into $f : \mathcal{S} \times V \to E$, whose output is an **evidence item** (Def 6) and *nothing further*. The mandate stops there. That item is then folded into the event's opinion by the **separate, universal fusion** stage (Defs 7–9) — the same operator that consumes evidence manufactured by parent edges (§3.4). This is the corrected division of labour: the **reading is mandate-specific (subjective)**, ending at an evidence item; the **combining is fixed (the same subjective-logic fusion for everyone)**. All disagreement between two narratives therefore lives in their mandates, never in the fusion rule — and because fusion is isolated, the *choice* of fusion operator (cumulative, averaging, dependence-aware; Defs 7–9) is a single swappable component rather than something baked into the mandate or the edges.
+
+**Barthes' non-event categories live here.** Narratology's two remaining functional types — the ones that are explicitly *not* events — map precisely onto the mandate, completing the Barthes/Chatman correspondence opened in §1.4.2:
+
+- **Informants** (Barthes' ready-made data of *time and place* — pure setting) are the mandate's **signal set** $\mathcal{S}$: the scope — horizon and venues — that fixes which signals are admissible, situating the narrative without being claims within it.
+- **Indices** (Barthes' indicators of *character and atmosphere*, which must be *deciphered*) are the mandate's **interpretation** (the reading step of $f$) together with the base-rate priors $a$: the disposition that colours how ambiguous evidence is read — bullish vs. sceptical, which sources to trust. Indices are, in Barthes' own account, not provably true or false; that is exactly why they belong in the interpretive frame and not among the measurable events.
+
+So the Barthes typology is recovered without remainder: **cardinal functions / kernels → focal terminal events; catalysers / satellites → phantom modifiers; informants → mandate signal set $\mathcal{S}$ (scope); indices → mandate interpretation and priors.**
+
+This typology directly serves **Claim 3** (structural propagation): it is precisely because events differ in causal role, and because phantom drivers exist, that evidence about one node must flow to others through the graph rather than being confined to focal leaves.
+
+### 1.4.5 An illustrative narrative (worked example)
+
+The components above are abstract; this subsection grounds every event class and every basis of modification in one concrete narrative.
+
+**Narrative N.** *"A 2024 spot-Bitcoin-ETF approval ignites a sustained BTC bull run."* Mandate $M = (\mathcal{S}, \mathcal{R}, f)$: signal set $\mathcal{S}$ = all admissible signals on U.S. crypto regulation within the end-2024 horizon (this is the scope); source set $\mathcal{R} = \{\textsf{Reuters}, \textsf{Bloomberg}, \textsf{SEC filings}, \dots\}$ of tier-1 press and regulated filings, each with a reliability, anonymous social media excluded; reading map $f$ whose interpretive disposition reads regulatory signals at face value. A concrete signal is the triple $s = \langle \text{"the SEC chair praises crypto innovation in a speech"}, \top, \textsf{Reuters} \rangle$ (statement, realized truth, source); $f$ reads $s$ against event $D$ below, looks up *Reuters* in $\mathcal{R}$ for its reliability, and emits a discounted, moderately-supporting evidence item. (Whether *Reuters* and *Bloomberg* count as *independent* corroborators of the same speech is a fusion-stage question, §3.3, not a mandate one.)
+
+Its events span the typology (M3? marks evidence-bearing):
+
+| Node | Proposition | Focus | Lifecycle | M3? | Why |
+|------|-------------|-------|-----------|-----|-----|
+| **D** | "By 2024-06-30 the SEC's posture has turned *accommodative*." | phantom | ordinary | ✓ | No stake on its outcome, but evidence-bearing (speeches, rulings) and resolvable by date; modulates several children. |
+| **E1** | "*No* SEC delay notice before 2024-03-30." | phantom | ordinary | ✓ | Unstaked micro-event; evidence-bearing; feeds E2. |
+| **E2** | "The SEC *approves* a spot BTC ETF before 2024-06-30." | focal | ordinary | ✓ | The narrative stakes on it ($w_N > 0$); also a modifier driving E3. |
+| **E3** | "BTC trades *above \$80k* before 2024-12-31." | focal | **terminal-success** | ✓ | The culmination — temporally furthest; its success *is* the thesis succeeding. |
+| **E4** | "A spot *ETH* ETF is approved before 2024-12-31." | focal | ordinary | ✓ | A plain staked event; used for B3 below. |
+| **E5** | "USDT trades below \$0.95 on a top-5 venue at any point in 2024." | phantom | ordinary | **✗** | A crisply-resolvable depeg (price oracle ⇒ M1, M2 ✓) with no reliable precursor — a *pure-jump* shock; if it fires it sharply lowers E3. |
+| **E6** | "The U.S. enacts a comprehensive crypto ban before 2024-12-31." | phantom | **terminal-fail** | ✓ | Unstaked, but its occurrence *kills the narrative* (contraction, §3.6); may sit anywhere and have children. |
+
+E5 is the corrected pure-jump example: a precise threshold and venue give it M1 and M2 while it still fails M3 — unlike the vague "a shock hits crypto," which failed M1 because "shock" carries no resolution criterion.
+
+The causal graph as an edge list (basis and sign labelled):
+
+```text
+  E1 → E2          B1(+)   no-delay-notice supports approval
+  D  → E2          B1(+)   accommodative posture supports approval
+  E2 → E3          B1(+)   approval drives the price culmination
+  D  → [inflow→E3] B2      posture scales how strongly inflows move E3
+  D  → E4          B3(+)   posture lifts the ETH-ETF base rate
+  E5 → E3          B1(−)   a depeg slams the price down (jump at resolution)
+  E6 ⇒ NARRATIVE          terminal-fail: firing contracts the whole narrative
+```
+
+**The classes, made explicit.**
+
+- **Focal + ordinary (E2, E4).** The narrative stakes on the outcome ($w_N > 0$). E2 also has children (a modifier), E4 is a leaf.
+- **Focal + terminal-success (E3).** The culmination — the furthest-dated node whose confirmation *is* the thesis succeeding; the narrative's largest stake rides here.
+- **Phantom + ordinary, evidence-bearing (D, E1).** No stake, but they leak signal and resolve, feeding children a *stream* of updates. D modulates three children three different ways — the ideal vehicle for B1–B3 below.
+- **Phantom + ordinary, pure-jump (E5).** No stake *and no precursor* (M3 fails): belief sits at its base rate, then jumps at resolution and slams a single large update into E3. Exogenous — nothing in the narrative moves it.
+- **Phantom + terminal-fail (E6).** No stake, but its firing decides the narrative (contraction). It can have children and sit anywhere; it is the failure-condition $F$ of §3.6 wearing its typological name.
+
+This shows the corrected rule in action: **E5 fails M3 yet is a legitimate node** — it could never be *focal* (its belief cannot move before resolution), but as a phantom its resolution still drives the kernel E3.
+
+**The three bases of modification, made explicit.** Take the child's projected probability $P = b + a\cdot u$ (Definition 4, Part II) as the readout.
+
+- **B1 — Level (mediation, additive).** *Edge E2 → E3, sign +.* When evidence lifts your probability of approval (E2) to $P = 0.80$ — a *confident deviation* of $P - a = 0.30$ above its $0.50$ prior, say after a favorable court ruling — that level *injects belief mass* into E3 proportional to $w\cdot(P - a)\cdot(1 - u)$. Approval is *on the causal path* to a higher price, so its level change pushes E3's level up directly. *Edges E1 → E2 and D → E2 are also B1:* "no delay notice" and "accommodative regime" are each direct positive evidence for approval.
+- **B2 — Strength (moderation, multiplicative gain).** *Edge D → (inflow-news → E3).* The regime D does **not** itself push E3 up or down. Instead it scales *how strongly* a *different* input — reported ETF net inflows — moves E3. Under a hostile regime, even "\$2B of inflows" barely updates your conviction (the product could be shut down); under an accommodative regime the *same* inflow figure strongly updates E3. D modulates the *gain* on another edge — an interaction term, not a direct contribution.
+- **B3 — Base-rate (prior shift).** *Edge D → E4, sign +.* The regime D gives no specific evidence about an *ETH* ETF, but it raises the *structural prior* that such approvals happen at all. It moves E4's base rate $a$ (e.g. $a = 0.05$ under a hostile regime vs. $a = 0.40$ under an accommodative one), not its committed belief $b$. With no ETH-specific evidence yet ($u = 1$), E4's probability $P = a$ shifts entirely with the regime.
+
+These three concrete edges exhibit the discriminating fingerprints tabulated in §1.4.3: the B1 edge E2 → E3 is *sticky*, the B3 edge D → E4 *fades* as E4 gathers its own ETH-specific evidence, and the B2 edge is *inert* until inflow news actually arrives for it to amplify.
+
+### 1.4.6 Well-formedness — binding the components
+
+Definition 1 lists the pieces; a *legitimate* narrative also satisfies conditions that tie them together. Collecting them in one place:
+
+**Definition 2F (Well-formed narrative).** $N = (V, E, M, Z^+, Z^-)$ is **well-formed** iff:
+
+1. **Focal–phantom coherence.** For every vertex, $w_N(v) = 0 \iff v$ is phantom; and $w_N(v) > 0 \Rightarrow v$ satisfies M3 (a focal event is evidence-bearing, §1.4.1).
+2. **Resolvability.** Every vertex satisfies M1 ∧ M2 — a truth-apt proposition $q$ with a designated resolution procedure and finite horizon (§1.4.1).
+3. **Acyclicity.** The sub-graph of B1/B3 (node-targeting) edges is a DAG, so the belief recompute of §3.4 has a topological order; B2 edges are hyperedges over edges, resolved *before* the channels they moderate.
+4. **Mandate coverage.** $M$ is surjective onto the focal vertices: every $v$ with $w_N(v) > 0$ is read by at least one admissible channel under $f$ (Def 2D).
+5. **Terminal consistency.** $Z^+, Z^- \subseteq V$ are disjoint; $Z^+$ (success culminations) are typically sinks carrying the thesis's success, while $Z^-$ (failure conditions) may sit anywhere, have children, and be focal or phantom (§1.4.2). The narrative *succeeds* when a $Z^+$ node confirms and *contracts* (§3.6) the instant any $Z^-$ node fires.
+6. **No double path for an observation.** No single observation may enter a vertex *both* directly (as an admissible signal in $\mathcal{S}$) *and* through a parent edge. If a fact $X$ genuinely drives both a parent $p$ and a child $c$, it must be modelled as a **common-cause node** $X \to p$, $X \to c$ rather than fed to $c$ twice. Because propagation is level-driven and keeps no per-observation provenance through edges (§3.4), such shared-ancestor correlation cannot be detected at fusion and *must* be carried by structure — the phantom common-cause pattern of §1.4.2 — on pain of the child silently double-counting $X$.
+
+A vertex that earns no place under Lemma 1 (phantom, ordinary, *and* a leaf) is pruned before the narrative is declared well-formed.
+
+Two modelling conventions complete the object. First, the tuple is a **static scaffold**: by Claim 1 the *structure* ($V, E, M$) is chosen under radical uncertainty and held fixed, while only the belief states $\omega_v(t)$ evolve — so the "time-indexing" of Definition 1 lives entirely in the opinions, not in the shape of the graph. Second, propagation along edges is **functional** (§3.4): a child's opinion is recomputed from the *current* opinions of its parents, not incrementally nudged, which is what keeps each edge kernel $k$ well-defined as a map on *states* rather than on *changes* and makes the whole evaluation order-independent.
+
+### 1.5 Why this definition is the right primitive
+
+This definition is deliberately positioned at the intersection of five mature literatures, which lets each later component of the framework inherit a rigorous parent:
+
+| Component of our object | Inherited from | Gives us |
+|---|---|---|
+| Narrative as causal force on prices, with dynamics | Shiller (narrative economics) | Motivation; time-indexing; decay |
+| Future-state + causal-mechanism pairs | Beckert (fictional expectations) | Events-with-dependencies as the unit |
+| Structured causal hypothesis; conviction ≠ probability | Tuckett (Conviction Narrative Theory) | Graph structure; the probability/confidence split |
+| Latent causal structure over events | Pearl (causal Bayesian networks) | The DAG formalism, intervention, propagation |
+| Belief = (likelihood, confidence) | Jøsang (subjective logic) | The two-dimensional belief state $\omega(v)$ |
+
+The remaining parts formalize each piece: Part II gives the belief state $\omega(v)$ a precise calculus (subjective logic); Part III gives the edges $E$ their propagation semantics (causal networks); Part IV closes the dynamics with **narrative decay** (forgetting over time). *Connecting a focal event to a tradeable instrument — expression, fidelity, sizing, and price-feedback — is deferred to future work on the market layer, deliberately kept out of the core so the framework hard-codes no single way of acting on a narrative.*
+
+### 1.6 Relation to Conviction Narrative Theory
+
+Because Conviction Narrative Theory (CNT) is the closest existing theory to ours, we state our relation to it explicitly rather than leave it implicit.
+
+**The apparent conflict.** CNT's central thesis is that *"narratives, not probabilities, are the currency of thought"* [Tuckett & Nikolic 2017; Johnson, Bilovich & Tuckett 2023]. CNT was developed as a reaction *against* probabilistic (expected-utility) decision theory: under radical (Knightian) uncertainty — where outcomes cannot be enumerated and probabilities cannot be meaningfully assigned — actors do not compute expected values. They build a causal story, simulate it forward, and act when it generates sufficient **conviction**, an epistemic state distinct from any probability. For CNT, narrative and probability are therefore *substitutes*: one reaches for narrative precisely *because* probability has failed.
+
+Our framework, by contrast, attaches probabilities to narrative events and updates them with formal rules. On its face this contradicts CNT.
+
+**Our position: extension, not refutation.** We do not claim CNT is wrong. We claim CNT is *incomplete for a special, economically important case*, and we complete it for that case. Formally:
+
+**Positioning Statement.** Conviction Narrative Theory establishes that agents reason through structured causal narratives and that *conviction is distinct from probability*. We operationalize CNT for the special case in which the narrative's constituent events are **measurable** (M1–M3), recovering probabilities *without discarding* the narrative scaffolding or the conviction dimension that CNT identifies.
+
+**The reconciliation (hybrid-regime claim).** The contradiction dissolves once we separate two distinct decision problems that CNT conflates:
+
+1. **Choice of structure** — *which* events, and *how* are they causally linked? This is made under genuine radical uncertainty: there is no probability distribution over "which causal story about the world is true." Here CNT governs: the narrative is selected by human judgment, conviction, and simulation, not by calculation.
+2. **Inference within structure** — *given* a fixed graph of measurable events, how likely is each event and how confident are we? Here, because the events are by construction resolvable, probabilities *do* exist and can be estimated and updated mechanically.
+
+**Claim 1 (Regime separation).** Narrative *structure* is chosen under radical uncertainty (CNT's domain); narrative *content* — the belief state over a fixed structure — is governed by probability theory. The two regimes meet at a single, explicit boundary: the requirement that every event be **measurable** (Definition 1). *(Market-resolvability — whether a tradeable instrument exists — is a further condition that future work on the market layer adds on top, not part of the core boundary.)*
+
+This boundary is not a limitation we apologize for; it is the **hinge of the entire framework.** It is precisely the line that separates irreducible human judgment (which narrative to hold) from mechanical computation (how to believe it), and it is what makes a narrative *computable* rather than merely *thinkable*.
+
+**What we inherit from CNT.** We take CNT's core insights and formalize each:
+
+- *Narrative as structured causal hypothesis* → the causal DAG of Definition 1 (formalized in Part III).
+- *Conviction is distinct from probability* → the two-dimensional belief state $\omega(v)$, where conviction becomes a formal quantity orthogonal to likelihood (formalized in Part II via subjective logic). CNT's "conviction" is, in our framework, literally $1 - \text{uncertainty}$.
+- *Interpretation is subjective and irreducible* → the mandate's reading map $f$ (Def 2D), which is **worldview-relative** (one admissible $f$ per trader) and **non-injective** (ambiguity collapses distinct signals). Two traders reading the same signal from the same source reach different opinions — CNT's central observation that judgement under uncertainty is not objective computation — reconstructed as a property of $f$.
+
+**Where the subjectivity — and the affect — actually live.** CNT locates the subjective, affect-laden content *in conviction itself*, as a holistic primitive. We locate it **upstream, in the reading**. Every term that builds an opinion's uncertainty is a subjective judgement: the ambiguity $h$ a trader assigns a signal, the trust $\tau$ they grant its source, the direction and strength $s^+, s^-$ their $f$ reads off it, and the base rate $a$ they carry. Since $u = 1 - \tau\cdot(s^+ + s^-)(1 - h)$ (Def 6), the **uncertainty is manufactured by the subjective reading** — and so is $C = 1 - u$. This gives affect a precise **slot** without our having to model its dynamics: emotion enters by *configuring those parameters* — fear narrows which sources are trusted, reads ambiguous news as refuting, deflates a base rate; excitement does the reverse. We do not model the *emotional dynamics* CNT studies (phantastic objects, divided states), but we fix *where* affect acts and *what* it changes — and what it changes is conviction, through $u$.
+
+**Conviction is derived, not primitive — the inversion.** This is the sharpest difference, and it is an *extension* of CNT rather than a contradiction of it. CNT takes conviction as the **primitive**, top-down gating variable. We take **uncertainty as primitive** — assembled bottom-up from subjective evidence-readings — and obtain conviction as its **dual**, $C = 1 - u$. Where CNT *posits* conviction, we *generate* it: conviction is the residue of how much a trader's subjective interpretation actually committed. CNT never says where conviction comes from; the measurable regime lets us say exactly.
+
+This also answers the natural objection that $C = 1 - u$ merely smuggles probability back in. The charge has two parts, and the inheritance above disarms the first: (i) *"it is just a second-order probability"* — but the counts feeding the Beta are **subjective readings**, not frequencies, so the object is interpretive through and through; (ii) *"its form is too well-behaved"* — granted, $1 - u$ moves smoothly and monotonically, whereas CNT's conviction can **lurch** and split off doubt. We concede (ii) deliberately: that smoothness is a property of the *stable* regime (the decay-contraction of Part IV), and it is exactly what **breaks** once a market is attached and positive price feedback overwhelms the contraction — the bubble analysis that the market layer invites (future work) — where the belief dynamics lurch: our formal recovery of CNT's manic/divided states. So we share CNT's subjectivity and the *locus* of its affect; we differ in making conviction a **derived** quantity, faithful to CNT's claim that it is distinct from probability while supplying the generative account CNT leaves open.
+
+### 1.7 Explicit claims and objectives
+
+For clarity, we collect the explicit claims the theoretical foundation will defend and the objectives it must meet.
+
+**Central thesis.** A narrative, when its constituent events are **measurable**, is a *fully computable belief object*: it can be formally represented, and updated against evidence, by a single coherent calculus — a structured, two-dimensional belief state over a causal graph that forms, fuses, propagates, and decays. *Acting on* that object in a market — expressing events through proxy instruments and sizing positions — is a separable layer, developed in future work on the market layer, that the core theory deliberately does not hard-code.
+
+**Claims to be established.**
+
+- **Claim 1 (Regime separation).** *(stated above)* Narrative structure is chosen under radical uncertainty; belief over a fixed structure is governed by probability theory, meeting at the measurability boundary.
+- **Claim 2 (Two-dimensional belief).** Reasoning with a narrative requires separating *likelihood* from *confidence*; collapsing them (as a single probability) is information-destroying. Conviction must be a first-class quantity. *(Part II)*
+- **Claim 3 (Structural propagation).** Evidence about one event must propagate to causally dependent events through the graph; treating events as independent discards the very structure that makes a narrative more than a basket of separate beliefs. *(Part III)*
+- **Claim 5 (Consistency under non-independent evidence).** Evidence that is redundant or self-referential must be discounted, or conviction is manufactured from an echo; the belief calculus must remain coherent under correlated sources. The *redundancy* half is settled here (Part III, §3.3); the *price-feedback* (reflexivity) half belongs to future work on the market layer, where belief and price form a loop.
+
+*(Claim 4 — fidelity-discounted expression — is market-facing and is deferred to future work; the numbering of Claims 1–3 and 5 is kept for stable cross-reference.)*
+
+**Objectives the framework must meet.**
+
+1. **Representational adequacy** — define a narrative precisely enough to be computed on (met by Definition 1).
+2. **Epistemic coherence** — a single, internally consistent calculus for forming and updating beliefs (subjective logic, Part II).
+3. **Structural fidelity** — preserve and exploit causal dependencies between events (causal networks, Part III).
+4. **Dynamic stability** — well-behaved under narrative **decay** (Part IV) and, once a market is attached, under price–belief feedback (future work).
+5. **Falsifiability** — the framework must make claims testable against data (e.g., via event-study abnormal returns), so the theory is empirical, not merely formal.
+
+**What is explicitly out of scope.** We do not model *system architecture*, agent orchestration, or implementation. We do not attempt automated causal discovery of the narrative graph — *which* narrative to hold is, by Claim 1, a human (radically uncertain) choice that the framework takes as given input. We also do not model **signal de-duplication**: we assume **one canonical statement per fact**, so recognizing two reports as the same observation across paraphrase, translation, or partial overlap is an upstream input, not part of the calculus (§3.3).
+
+## Part II — The Belief State
+
+> *Discharges Claim 2: reasoning with a narrative requires separating* likelihood *from* confidence*; collapsing them into a single probability is information-destroying.*
+
+### 2.1 Why one number is not enough
+
+Definition 1 attached to each event a belief state $\omega(v)$ that we deliberately left as "a probability together with a degree of confidence." We now make that precise, and first argue why the second dimension is not optional.
+
+Consider two events, each of which we judge **60% likely**:
+
+- Event A: a coin we have flipped ten thousand times lands heads next — we are *almost certain* the probability is ~0.6.
+- Event B: a one-off geopolitical outcome we have barely any information about — our *best guess* is 0.6, but we would not be surprised to learn it is 0.3 or 0.9.
+
+A single probability $P = 0.6$ represents both identically. Yet no trader would size them identically: A supports a large, confident position; B demands caution. The missing quantity is **confidence in the probability itself** — a second-order belief that classical probability cannot express because it commits to a point estimate.
+
+This is not a novel observation; it is the **risk/uncertainty distinction** of [Knight 1921] — *risk* is a known probability, *uncertainty* is an unknown one — and it is empirically real: the [Ellsberg 1961] paradox shows people systematically price a bet with *known* odds differently from one with *unknown* odds of equal expected value. A trading framework that collapses the two prices both bets the same and is therefore demonstrably mis-specified.
+
+**Claim 2 (restated).** A belief state must carry two independent quantities — a *likelihood* and a *confidence in that likelihood*. Any representation that reduces these to a single number discards information that is decision-relevant for sizing.
+
+### 2.2 The subjective opinion
+
+We adopt **subjective logic** [Jøsang 2001, 2016] as the calculus for $\omega(v)$, because it supplies exactly the two-dimensional object Claim 2 requires, together with a consistent algebra for updating it (Part III).
+
+**Definition 3 (Subjective opinion).** For a measurable event $e$ (a binary proposition), a *subjective opinion* is a tuple
+
+$$\omega(e) = (b, d, u, a),$$
+
+where $b$ is **belief mass** (evidence *for* $e$), $d$ is **disbelief mass** (evidence *against*), $u$ is **uncertainty mass** (absence of committing evidence), and $a$ is the **base rate** (prior probability of $e$ absent any evidence), subject to
+
+$$b + d + u = 1, \qquad b, d, u \in [0,1], \qquad a \in [0,1].$$
+
+We write the opinion as the full 4-tuple here for clarity; because $b + d + u = 1$, the disbelief $d = 1 - b - u$ is **derived**, so a vertex need only store $(b, u, a)$ as in Definition 1.
+
+The three masses live on a 2-simplex: belief and disbelief are the *committed* mass, while $u$ is *uncommitted* mass that has not yet been pushed toward either pole. The base rate $a$ is a separate prior, not part of the simplex; it says where the uncommitted mass *defaults* in the absence of evidence.
+
+**Where the base rate comes from.** The base rate $a$ is the framework's **prior probability** — the likelihood assigned to $e$ before any case-specific evidence, fixed by the *reference class* the event belongs to (the long-run frequency of "events like this one") [Reichenbach 1949]. The name, and its decision-theoretic weight, come from the **base-rate fallacy** literature in the psychology of judgement [Kahneman & Tversky 1973; Bar-Hillel 1980], which documents that people systematically *neglect* prior frequencies once vivid case-specific evidence is in view. Subjective logic builds the base rate in as a *separate, non-vanishing* parameter precisely so a model *cannot* commit this error: it is the default that the projected probability $P = b + a\cdot u$ falls back to whenever committed evidence is thin ($u$ large), and it is what **survives** epistemic contraction when learned belief is withdrawn (§3.6) [Jøsang 2016]. Two limiting readings bound it: a maximally non-informative prior is the **principle of indifference** $a = \tfrac{1}{2}$ [Laplace 1814]; a structurally-grounded prior instead encodes the worldview the mandate supplies (indices → priors, §1.4.4). When *no* reference class exists — the genuinely one-off event — the base rate cannot be grounded frequentially and becomes a judgement in its own right (the reference-class problem, which returns for *expression* in future work).
+
+### 2.3 The two readouts: projected probability and conviction
+
+From an opinion we extract the two quantities Claim 2 demands.
+
+**Definition 4 (Projected probability).** $P(e) = b + a \cdot u.$
+
+The committed belief $b$, plus the share $a$ of the uncommitted mass $u$ that the base rate assigns to $e$. This is the single number a classical model would report — but it is now a *derived* quantity, not the primitive.
+
+**Definition 5 (Conviction).** $C(e) = 1 - u.$
+
+The total committed mass ($= b + d$). Conviction is **orthogonal** to $P$: it measures *how much* evidence has been committed in either direction, irrespective of which way it points. This is precisely the formalization of Tuckett's *conviction* promised in §1.6 — CNT's conviction is, literally, $1 - u$.
+
+The two events of §2.1 are now distinct objects: both have $P = 0.6$, but the coin has $C \approx 1$ (almost all mass committed) while the geopolitical event has $C \approx 0$ (almost all mass uncommitted, $P$ riding on the base rate).
+
+### 2.4 An opinion is a distribution over probabilities
+
+The deeper justification for subjective logic is that an opinion is not an *ad hoc* pair of numbers; it is a compact encoding of a full **probability distribution over the unknown probability** of $e$. This is what makes "confidence in a probability" mathematically honest.
+
+A binary opinion with prior weight $W$ (the standard non-informative choice is $W = 2$) maps bijectively to a **Beta distribution** over the latent success probability $p$ of $e$:
+
+$$\mathrm{Beta}(p ; \alpha, \beta), \qquad \alpha = \frac{W \cdot P}{u}, \qquad \beta = \frac{W \cdot (1 - P)}{u}.$$
+
+Equivalently, in evidence form, if $r$ and $s$ are counts of confirming and refuting observations, then
+
+$$b = \frac{r}{W + r + s}, \qquad d = \frac{s}{W + r + s}, \qquad u = \frac{W}{W + r + s},$$
+
+so **uncertainty falls as evidence accumulates**, $u \to 0$ as $r + s \to \infty$.
+
+**Proposition 1 (Mean–variance reading).** For $W = 2$, the opinion's induced distribution over $p$ has
+
+$$\text{mean} = P, \qquad \text{variance} = \frac{u \cdot P(1 - P)}{2 + u}.$$
+
+Hence the **projected probability is the first moment** and the **uncertainty mass governs the second**: variance is strictly increasing in $u$, equals 0 iff $u = 0$, and reaches its maximum $P(1-P)/3$ at full ignorance $u = 1$.
+
+*Proof sketch.* With $W = 2$, $\alpha + \beta = 2/u$; substitute $\alpha = 2P/u$, $\beta = 2(1-P)/u$ into the Beta mean $\alpha/(\alpha+\beta) = P$ and variance $\alpha\beta/[(\alpha+\beta)^2(\alpha+\beta+1)] = P(1-P)\cdot u/(2+u)$. $\blacksquare$
+
+This is the rigorous content of Claim 2: a subjective opinion is a *distribution*, the point probability $P$ is only its **mean**, and conviction $C = 1 - u$ tracks the **inverse spread**. Reporting $P$ alone discards the second moment — exactly the information that separates "60%, certain" from "60%, guessing."
+
+### 2.5 Subjective logic contains classical probability
+
+Two boundary cases show that we lose nothing by adopting the richer object.
+
+- **Vacuous opinion** ($b = d = 0$, $u = 1$): then $P = a$ and $C = 0$. Total ignorance falls back exactly on the base rate, with zero conviction. (This is also the natural *reset* state — when a narrative is invalidated, beliefs contract to $u = 1$, restoring the prior; developed in Part III.)
+- **Dogmatic opinion** ($u = 0$): then $P = b$, $d = 1 - b$, $C = 1$, and Proposition 1 gives variance 0 — a point mass. The opinion *is* a classical probability.
+
+**Proposition 2 (Generalization).** Classical (point) probability is the zero-uncertainty boundary of subjective logic: the map $\omega \mapsto P$ restricted to $\{u = 0\}$ is exactly an ordinary probability assignment. Subjective logic therefore strictly extends probability theory rather than replacing it.
+
+This reconnects to §1.6: *within* a fixed narrative structure we never abandon probability — we embed it as the $u = 0$ limit of a calculus that can also represent every intermediate degree of confidence.
+
+### 2.6 Why the second dimension is decision-relevant
+
+The confidence dimension is not merely descriptive: two opinions with identical $P$ but different $u$ are *different* objects (the spread $u\cdot P(1-P)/(2+u)$ of Proposition 1 differs), and any downstream use that is sensitive to the *whole* distribution over $p$ — not just its mean — must treat them differently. *(The canonical such use is growth-optimal position sizing under parameter uncertainty, where conviction scales the stake; that, and the fidelity/conviction discounting it induces, is developed in future work on the market layer.)*
+
+With the static belief object fixed, **Part III** turns to its **dynamics**: how raw evidence is turned into opinions, how independent and redundant evidence are fused, and how an update at one event propagates through the causal edges of the narrative graph.
+
+## Part III — The Dynamics of Belief
+
+> *Discharges Claim 3 (structural propagation) and the redundancy half of Claim 5 (reflexive consistency: redundant evidence must not manufacture confidence).*
+
+Part II fixed the *static* belief object. We now specify how it *moves*. An event's opinion changes through exactly two channels, and the design constraint is that **both must be expressed in the same subjective-logic algebra so they compose without contradiction**:
+
+1. **Exogenous** — direct evidence arriving from the outside world (§3.1–3.3);
+2. **Endogenous** — influence propagating from parent events through modifier edges (§3.4).
+
+The unifying device is simple: *propagation is just the generation of synthetic evidence, fused through the same operators as real evidence.* This is what lets a parent's update and a news headline update a child by the identical machinery.
+
+### 3.1 From evidence to opinion (the measurement model)
+
+A raw evidence item does not arrive as an opinion; it arrives as a claim of some *strength*, from a *source* of some *reliability*, bearing on the event with some *directness*. We map it to an opinion in two stages.
+
+**Definition 6 (Evidence item and discounting).** An evidence item is a tuple $(s^+, s^-, h, \tau)$ where $s^+ \in [0,1]$ is **support strength** (evidence *for*), $s^- \in [0,1]$ is **refute strength** (evidence *against*), $h \in [0,1]$ is the **ambiguity** of the item, and $\tau \in [0,1]$ is a **trust discount** $\tau = (\text{source reliability}) \times (\text{directness})$. It induces the opinion
+
+$$b = \tau\cdot s^+\cdot(1 - h), \qquad d = \tau\cdot s^-\cdot(1 - h), \qquad u = 1 - \tau\cdot(s^+ + s^-)(1 - h),$$
+
+with base rate $a$ inherited from the event's structural prior.
+
+The first factor $(1 - h)$ moves *ambiguous* evidence toward uncertainty; the trust factor $\tau$ then shrinks the committed masses toward $u$, parking unreliable or indirect evidence in ignorance rather than letting it commit belief. This is exactly subjective logic's **trust discounting (transitivity) operator** [Jøsang 2001, 2016]: an opinion received through a source is composed with a trust-opinion about that source. (As a special case it reproduces the elementary evidence-to-opinion rule in which $\tau$ is a product of source reliability and directness and $h$ is an ambiguity index.)
+
+**Invariant (no fallible certainty).** Every fallible source carries $\tau < 1$, so by the formula above a single news item always lands at $u > 0$ and can **never** reach the dogmatic state $u = 0$. The value $u = 0$ (equivalently $\tau = 1$, infinite evidence) is **reserved for the oracle** self-signal of resolution (§3.6). This is what makes cumulative fusion's absorbing behaviour safe: only resolution can drive an event's uncertainty to zero, and conflicting dogmatic inputs — which would make cumulative fusion's $\kappa = u_A + u_B - u_A u_B$ vanish — cannot arise, since the oracle resolves each event to a single truth value once. (Implementations may clamp $\tau \le \tau_{\max} < 1$ to enforce this.)
+
+### 3.2 Fusing independent evidence — cumulative fusion
+
+When several *independent* items bear on the same event, their evidence should *accumulate*: confidence ought to rise as corroborating-but-independent observations stack up. The operator is **cumulative belief fusion (CBF)** [Jøsang, Wang & Zhang 2017], the subjective-logic image of summing Beta/Dirichlet evidence counts.
+
+**Definition 7 (Cumulative fusion).** For opinions $A, B$ on the same event with $u_A, u_B > 0$, writing $\kappa = u_A + u_B - u_A u_B$,
+
+$$b = \frac{b_A u_B + b_B u_A}{\kappa}, \qquad d = \frac{d_A u_B + d_B u_A}{\kappa}, \qquad u = \frac{u_A u_B}{\kappa}.$$
+
+The key property is that **uncertainty strictly contracts**: $u \le \min(u_A, u_B)$, with equality only against a vacuous input. Independent corroboration buys confidence — exactly as it should.
+
+### 3.3 Fusing redundant evidence — keying redundancy on the observation
+
+Cumulative fusion is *wrong* when the inputs are not independent. In narrative markets the *same* story is retold across many outlets; treating each retelling as fresh evidence manufactures confidence from an echo, which is precisely the contagion-driven over-confidence that Shiller and Soros identify as the engine of bubbles [Shiller 2019; Soros 1987]. The working guard against this is the **observation-keyed fusion rule** developed below; this subsection first fixes the two *baseline* operators it is built from and the endpoint that bounds them.
+
+The **baseline** for fully redundant inputs is **averaging belief fusion (ABF)** — the reference against which the working rule's *improvement* is measured:
+
+**Definition 8 (Averaging fusion — redundant baseline).** For opinions $A, B$ with $u_A + u_B > 0$,
+
+$$b = \frac{b_A u_B + b_B u_A}{u_A + u_B}, \qquad d = \frac{d_A u_B + d_B u_A}{u_A + u_B}, \qquad u = \frac{2 u_A u_B}{u_A + u_B}.$$
+
+ABF returns the *harmonic-mean* uncertainty: hearing the same thing twice yields **no** confidence gain. The two baseline operators differ exactly in their treatment of redundancy:
+
+**Proposition 3 (Redundancy guard).** For two equal-uncertainty inputs $u_A = u_B = u_0 \in (0,1)$: cumulative fusion gives $u_{\mathrm{CBF}} = u_0/(2 - u_0) < u_0$ (confidence gain), while averaging fusion gives $u_{\mathrm{ABF}} = u_0$ (no gain). Hence naive summation converts repetition into conviction, and averaging is the conservative floor that refuses to.
+*Proof.* Substitute $u_A = u_B = u_0$ into Definitions 7 and 8. $\blacksquare$
+
+Between these two endpoints sits a one-parameter family, used by the working rule only for *partial* dependence (and, once a market is attached, by the price self-echo of future work):
+
+**Definition 9 (Dependence-aware fusion — the ρ-family).** For an estimated input dependence $\rho \in [0, 1]$, with $\kappa(\rho) = u_A + u_B - (1 - \rho) u_A u_B$,
+
+$$b = \frac{b_A u_B + b_B u_A}{\kappa(\rho)}, \qquad d = \frac{d_A u_B + d_B u_A}{\kappa(\rho)}, \qquad u = \frac{(1 + \rho) u_A u_B}{\kappa(\rho)}.$$
+
+Then $\rho = 0$ recovers cumulative fusion (independent) and $\rho = 1$ recovers averaging fusion (fully redundant); intermediate $\rho$ interpolates. A binary redundancy switch is the two-point discretization $\rho \in \{0, 1\}$ of this continuum.
+
+**The unit of independent evidence is the *observation*, not the source.** The redundancy these operators guard against is best keyed not on *who* reported but on *what fact* was reported. We identify a fact with the **statement** $q_s$ a signal carries (Def 2E); throughout we **assume one canonical statement per fact** — recognizing two reports as the *same* observation (paraphrase, translation, partial overlap) is upstream de-duplication and is **out of scope**, exactly as causal-graph discovery is (§1.7). Two layers of an item then separate cleanly, and they map onto the *existing* fields of the evidence item $(s^+, s^-, h, \tau)$:
+
+- **Weight** $(s^+, s^-, h)$ — the fact's *evidential implication* for the event, read by $f$'s interpretation step. This is a property of the **fact**, applied **once** per distinct statement; reporting it twice does not change it.
+- **Validity** $\tau$ — *confidence that the fact actually occurred / is not fabricated*. This is what independent corroboration **boosts**.
+
+**Observation-keyed fusion rule.** Group a node's incoming exogenous items by **statement** $q_s$. **Within a group** (one fact, many reports): emit a **single** item, taking its weight $(s^+, s^-, h)$ from $f$'s interpretation **once**, and setting its validity by **noisy-OR over the independent reporters**,
+
+$$\tau_O \;=\; 1 - \!\!\prod_{\text{independent } i \text{ reporting } O}\!\! (1 - \tau_i),$$
+
+capped at 1 — "the fact is fabricated only if *every* independent reporter is wrong," so genuine corroboration raises $\tau_O$ toward 1 while the fact's weight is still counted once. **Across groups** (distinct facts): combine the per-observation items by **cumulative fusion** (Def 7).
+
+Source correlation re-enters at *exactly one* point: deciding which reporters count as **independent** in the noisy-OR (a wire and its reprint are not, so they do not inflate $\tau_O$). That is the only thing the fusion stage needs to know about sources, and it is *not* in the mandate (Def 2D). The two original operators are recovered as endpoints: fully **independent** reporters of the same fact give the maximal noisy-OR boost; fully **dependent** ones (a reprint) give $\tau_O \approx \max_i \tau_i$ — the no-gain behaviour of **averaging fusion** (Def 8). Genuinely *partial* source dependence falls back to the **fractional $\rho$** of Def 9, which is thereby reserved for where partial dependence is *intrinsic* — most notably the price self-echo treated in future work.
+
+This guard handles only **leaf (exogenous) redundancy** — the same fact reaching a node through several sources. The other redundancy — the *same fact reaching a node both directly and through a parent* — is **structural**, not a fusion concern, and is handled by the common-cause discipline of well-formedness (Def 2F): because propagation is level-driven and keeps no per-observation provenance through edges (§3.4), a shared driver of a parent and a child *cannot* be detected by tagging and must instead be modelled as a single common-cause node feeding both.
+
+This partial discharge of Claim 5 is the *redundancy* guard; the *price-feedback* half of reflexivity arises only once a market is attached, and is handled in future work.
+
+### 3.4 Propagation across modifier edges (B1, B2, B3)
+
+We now give the endogenous channel: how a parent's state reaches its children, for each of the three bases named in §1.4.3. The architecture is **producers and one consumer**: the mandate's reading map $f$ (§1.4.4) and the B1 edge kernel are both *producers* — each turns its input (a signal, or a parent's opinion) into an **evidence item** $E$ and stops there — while the **fusion** stage (Defs 7–9) is the single *consumer* that combines all items into the child's opinion. Neither the mandate nor the edge performs fusion; isolating it is what lets the fusion operator be chosen independently (cumulative, averaging, dependence-aware) without disturbing how anything is read. The governing principle is the unifying device above — **every producer emits into the same evidence space**, so endogenous and exogenous evidence compose automatically. Propagation is **functional, not incremental**: a child's opinion is *recomputed* from the *current* opinions of its parents (together with its own accumulated exogenous evidence), never nudged by a one-shot delta. This makes the dynamics **order-independent and idempotent** — the Bayesian-network reading [Pearl 1988] — and it lets all three bases share a single driver, the parent's **confident deviation** from its own prior,
+
+$$\bar{\Delta}_p = (1 - u_p)\cdot(P_p - a_p),$$
+
+the surprise $(P_p - a_p)$ gated by conviction $(1 - u_p)$: a vacuous parent ($u_p = 1$, so $P_p = a_p$) has $\bar{\Delta}_p = 0$ and moves nothing. Throughout, the edge $p \to c$ carries weight $w$, its directional sense intrinsic to the kernel (the sign $\sigma$ below is the kernel's, not a separate edge field).
+
+**Kernels are specified by contract, not by formula.** A kernel is any function of the signatures below that satisfies its property set; the framework fixes the *contract*, the applicant supplies the *implementation*. Writing $\Omega = \Delta^2 \times [0,1]$ for the opinion space and $E$ for the evidence space (Def 6), the three bases have distinct codomains — which is the formal statement that they touch three different parts of the child's state:
+
+- **B1 (level)** — $k_{B1} : \Omega \times \{+,-\} \to E$: reads the parent's opinion and the polarity, **returns an evidence item**. Properties: **(K1) well-formedness** — output is a valid item, so fusion keeps the child on the simplex; **(K2) annihilation** — $\bar{\Delta}_p = 0$ (vacuous *or* unsurprising parent) ⇒ null item; **(K3) direction** — support iff $\sigma\cdot(P_p - a_p) > 0$, refute iff $< 0$; **(K4) monotonicity** — strength non-decreasing in $\sigma\cdot\bar{\Delta}_p$ and in $w$; **(K5) boundedness** — strength bounded, and $w = 0$ ⇒ null; **(K6) regularity** (recommended) — continuous in the parent's state (the stability results of Part IV and of future work lean on this).
+- **B3 (base-rate)** — $k_{B3} : \Omega \times [0,1] \to [0,1]$: reads parent and the child's current $a_c$, **returns a new base rate**. Properties: **(R1)** output in $[0,1]$; **(R2)** $\bar{\Delta}_p = 0$ ⇒ $a_c$ unchanged; **(R3)** shift has the sign of $\sigma\cdot(P_p - a_p)$; **(R4)** monotone in $\sigma\cdot\bar{\Delta}_p$ and $w$; **(R5) mass purity** — touches only $a_c$, injects no simplex mass.
+- **B2 (strength)** — $k_{B2} : \Omega \times [0,1] \to [0,1]$: reads parent and a target edge's weight $w_x$, **returns a rescaled weight**. Properties: **(S1) identity at rest** — $\bar{\Delta}_p = 0$ ⇒ gain factor $= 1$; **(S2)** output in $[0,1]$; **(S3)** monotone in $\pi\cdot\bar{\Delta}_p$ ($\pi$ the amplify/dampen sign); **(S4) evidence purity** — injects no evidence of its own; **(S5) inertness** — with no channel to moderate, no effect.
+
+The definitions that follow give the **simplest admissible kernel** for each basis — concrete instances satisfying every property above — but any function meeting the contract may replace them.
+
+**Definition 10 (Level propagation — B1, mediation).** A B1 edge is a **reading map**, exactly like the mandate's $f$: it consumes the parent's *current* opinion and the edge's polarity and **returns an evidence item** (Def 6) — it does *not* itself update the child. Its signature is
+
+$$k_{B1} : \Omega \times \{+,-\} \to E, \qquad (\omega_p, \sigma) \mapsto (s^+, s^-, h, \tau),$$
+
+with weight $w \in [0,1]$ an edge parameter and $\sigma \in \{+,-\}$ the relationship sign. The item is computed from the signed confident deviation $\delta = \sigma\cdot(P_p - a_p)$:
+
+$$s^+ = \max(\delta, 0), \qquad s^- = \max(-\delta, 0), \qquad h = u_p, \qquad \tau = w\cdot(1 - u_p).$$
+
+Because the edge stops at an evidence item, it feeds the **same separate fusion stage** (Defs 7–9) that the mandate's readings feed: the child's opinion is the fusion of its accumulated exogenous (signal) evidence with the items emitted by *all* its B1 parents. Since each item is a function of the parent's *level* — not of a transient change — the child can be recomputed in any order with the same result. *(The map above is just the simplest admissible kernel; any function meeting the B1 properties of §3.4 may replace it — a parent confirmed above its prior emits support of strength $P_p - a_p$, reliability $1 - u_p$, ambiguity $u_p$, directness $w$; a parent sitting at its prior emits nothing.)*
+
+**Two signs, composed.** The direction the child moves is governed by the **signed confident deviation** $\delta = \sigma\cdot(P_p - a_p)$, which multiplies *two independent signs* — and reading them separately is what makes inverse relationships fall out for free:
+
+- **$\sigma$ — the relationship's polarity** (intrinsic to the kernel): $\sigma = +$ is **concordant** (parent and child move together), $\sigma = -$ is **discordant** (parent up ⇒ child *down*). This is the inversion: a discordant kernel *is* an "increasing parent reduces child belief" link, e.g. *E5 → E3, B1(−)* — a likelier depeg pushes the price culmination toward *false*.
+- **$\mathrm{sign}(P_p - a_p)$ — which way the parent itself moved** relative to *its own* prior: above its prior emits a positive deviation, below it a negative one.
+
+Their **product** sets whether the child receives *support* ($s^+ = \max(\delta,0)$, belief mass) or *refutation* ($s^- = \max(-\delta,0)$, disbelief mass); the magnitude is $|P_p - a_p|$, carried at reliability $\tau = w(1 - u_p)$. All four combinations are well-formed:
+
+| Kernel | Parent vs. its prior | $\delta = \sigma\cdot(P_p-a_p)$ | Child receives | Example |
+|---|---|---|---|---|
+| **Concordant** ($\sigma=+$) | above ($P_p>a_p$) | $+$ | **support** → $b\uparrow$ | approval likelier → price up |
+| **Concordant** ($\sigma=+$) | below ($P_p<a_p$) | $-$ | **refute** → $d\uparrow$ | approval unlikelier → price down |
+| **Discordant** ($\sigma=-$) | above ($P_p>a_p$) | $-$ | **refute** → $d\uparrow$ | depeg likelier → price **down** |
+| **Discordant** ($\sigma=-$) | below ($P_p<a_p$) | $+$ | **support** → $b\uparrow$ | depeg unlikelier → price up |
+
+So both the *parent falling* (sign of $P_p - a_p$) and the *inverted link* (kernel sign $\sigma$) are already expressible, and they **compose multiplicatively**: a discordant edge from a parent that *drops* below its prior yields *support* for the child — two negatives making a positive, exactly as a causal "double inversion" should. The exogenous side mirrors this: $f$'s interpretation returns *support* or *refute*, so a signal can raise $d$ just as readily as $b$.
+
+**Definition 11 (Base-rate propagation — B3, prior shift).** Let $a_c^0$ be $c$'s structural prior and $(P_p - a_p)$ the parent's *confident deviation* from its own prior. Update
+
+$$a_c \leftarrow \mathrm{clip}\!\left[\, a_c^0 + \sigma\cdot w\cdot(1 - u_p)\cdot(P_p - a_p),\; 0,\; 1 \,\right].$$
+
+No mass is added to $c$'s simplex; only the default that the uncommitted mass $u_c$ reverts to is moved.
+
+**Definition 12 (Strength propagation — B2, moderation).** For a *different* incoming edge $x \to c$ with nominal trust/weight $w_x$, a moderator edge $p \to c$ of polarity $\pi \in \{+1\text{ amplify}, -1\text{ dampen}\}$ rescales it:
+
+$$w_x^{\text{eff}} \leftarrow \mathrm{clip}\!\left[\, w_x\cdot\big(1 + \pi\cdot w\cdot(1 - u_p)\cdot(P_p - a_p)\big),\; 0,\; 1 \,\right],$$
+
+applied **before** $x$'s evidence is discounted and fused. The moderator injects no evidence of its own; it reshapes the *gain* on another channel.
+
+**Ordering.** Because B2 reshapes the gains that B1/exogenous evidence will use, the graph is **evaluated** over the DAG in **topological order** (well-defined by acyclicity, Definition 1), and *within* each node in the order **B3 (base rates) → B2 (edge gains) → B1/exogenous (fuse level evidence)**. Reflexive feedback loops — where a child's price would feed back to a parent — are excluded here by acyclicity and treated dynamically once a market is attached (future work).
+
+### 3.5 Coherence properties
+
+Three properties certify that the dynamics never produce an ill-formed belief state and that they behave sensibly at the extremes.
+
+**Proposition 4 (Simplex preservation).** Discounting (Def 6) and all fusion operators (Defs 7–9) map the opinion simplex $b + d + u = 1$ into itself; base-rate (Def 11) and strength (Def 12) updates act on the off-simplex parameters $a$ and $w_x$ under clipping. Hence every update preserves $b + d + u = 1$ and keeps $a, w \in [0,1]$. $\blacksquare$
+
+**Proposition 5 (Ignorance does not propagate).** If a parent is vacuous ($u_p = 1$, so $C_p = 0$), then in B1 the trust factor $\tau = w(1 - u_p) = 0$ (no evidence emitted), in B3 the shift $\propto (1 - u_p) = 0$, and in B2 the gain factor is $1 + 0 = 1$ (no moderation). A fully uncertain parent therefore leaves every child unchanged under all three bases. $\blacksquare$
+
+Proposition 5 is the structural counterpart of Claim 2: because conviction is explicit, *the framework transmits influence in proportion to confidence and is silent under ignorance* — a property no single-probability model can state, since it has no conviction to gate on. It also recovers, as theorems rather than heuristics, the discriminating behaviors tabulated in §1.4.3 (B1 sticky, B3 fades as $u_c \to 0$, B2 inert without a second channel).
+
+### 3.6 Structural revision: resolution and narrative contraction
+
+Two dynamic events sit outside the per-node propagation channels above.
+
+**Resolution as the oracle's self-signal.** Resolution is not a new kind of operation — it is the arrival of one distinguished signal. Every vertex's *own* statement $q$ is an admissible signal within its mandate, emitted by a distinguished, maximally-trusted source: the **oracle** $O$ of M2. Before the horizon this self-signal never fires (that is what M3 is for — *other* signals leak about $q$); at resolution it fires exactly once, $s_{\text{self}} = \langle q, t, O \rangle$, carrying **unbounded evidence weight** ($r \to \infty$ if $t = \top$, $s \to \infty$ if $t = \bot$). Three properties follow for free, with no special-case rule:
+
+- it drives $b \to 1$, $u \to 0$ (or $d \to 1$) — the **dogmatic** opinion of §2.5;
+- it is **absorbing** — unbounded plus any finite future evidence is still unbounded, so the resolved opinion never moves again;
+- it is **decay-immune** — decay multiplies counts by $\gamma < 1$ (§4.1) and $\gamma\cdot\infty = \infty$, so a resolved fact does not forget, automatically.
+
+This also powers "today's event is tomorrow's signal": a resolving *parent* absorbs to $P \in \{0,1\}$ and then propagates to its children at maximal confident deviation. It yields a clean **hierarchy of certainty**: news corroboration drives $\tau \to 1$ (sure the fact *happened*) but keeps *finite* weight (the fact implies only so much), whereas the oracle carries *infinite* weight (the fact *is* the event).
+
+**Practical (pre-resolution) boundary.** Short of the oracle firing, an event is treated as effectively resolved once its opinion crosses a boundary — high projected probability *and* high conviction together, $P \ge 0.95$ with $C \ge 0.85$ (true), or $P \le 0.05$ with $C \ge 0.85$ (false). Requiring *both* is the operational payoff of the two-dimensional belief: a high $P$ riding on low conviction does **not** resolve, blocking premature closure on thin evidence.
+
+**Contraction.** A narrative may carry a designated **failure condition** $F$. When evidence for $F$ clears a strict gate (high reliability and high committed belief), the narrative is invalidated and undergoes **epistemic contraction** in the sense of AGM belief revision [Alchourrón, Gärdenfors & Makinson 1985]: every non-resolved event has its learned masses withdrawn,
+
+$$(b, d, u) \leftarrow (0, 0, 1), \qquad \text{so} \quad P \leftarrow a, \quad C \leftarrow 0,$$
+
+reverting to the vacuous opinion of §2.5. Contraction — *withdrawing* belief — is deliberately distinct from revision — *replacing* it with its negation: a failed thesis does not make the opposite thesis true, it returns us to the structural prior. Note that **base rates survive**: contraction erases what was *learned* while preserving the structural priors $a$ that encode the worldview itself.
+
+With exogenous evidence, fusion under dependence, three-basis propagation, and structural revision in place, the belief dynamics are nearly complete. **Part IV** adds the one remaining time-dependent force — **narrative decay**, the forgetting of evidence as it ages — closing the belief calculus. *(Connecting the resulting beliefs to market instruments — expression, fidelity, sizing — and the price-feedback loop are developed in future work.)*
+
+## Part IV — Narrative Decay
+
+> *Closes the belief dynamics with the one remaining time-dependent force: evidence ages. An opinion left unrefreshed must drift back toward ignorance, so conviction is earned and then leaks away. This meets the* decay *half of the dynamic-stability objective; the* price-feedback *half arises only once a market is attached, and is developed in future work.*
+
+Parts II–III fixed the belief object and let evidence flow **into** it. One force remains: time. Every datum spoke about the world *when it arrived*, and the world moves on, so an unrefreshed opinion must drift back toward ignorance. This part adds that drift and shows the resulting dynamics are **stable** — beliefs stay bounded and revert to the prior under silence.
+
+### 4.1 Narrative decay
+
+Conviction $C = 1 - u$ is earned by accumulating evidence (Part III), but every datum spoke about the world *when it arrived*; the world moves on. Absent refresh, an opinion must therefore drift back toward ignorance — otherwise a narrative that received a burst of evidence months ago and then fell **silent** would still report high conviction today, claiming certainty about something long unchecked. Conviction is a **self-discharging battery**: fresh evidence charges it (drives $u$ down), silence leaks it back toward empty ($u \to 1$, hence $P \to a$).
+
+**Definition 13 (Evidence decay).** Between evidence arrivals an opinion relaxes toward the vacuous opinion at an event-specific **half-life** $h$. Over elapsed time $\Delta t$, with contraction factor $\gamma = (\tfrac{1}{2})^{\Delta t / h} \in (0,1]$,
+
+$$b \leftarrow \gamma\cdot b, \qquad d \leftarrow \gamma\cdot d, \qquad u \leftarrow 1 - \gamma(1 - u),$$
+
+leaving the **base rate $a$ unchanged** (equivalently, the underlying Beta evidence counts are scaled by $\gamma$). As $\Delta t \to \infty$, $(b, d, u) \to (0, 0, 1)$ and $P \to a$.
+
+This is **not a new primitive** — it is §3.6's AGM contraction *in slow motion*. Both send an opinion to the vacuous state, preserving base rates; they differ only in trigger and speed:
+
+| | Trigger | Speed | Target |
+|---|---|---|---|
+| **Contraction** (§3.6) | a failure event fires | a sudden **jump** | vacuous ($u=1$, $P\to a$) |
+| **Decay** (Def 13) | the passage of time | a continuous **leak** | vacuous ($u=1$, $P\to a$) |
+
+It also makes resolution's **decay-immunity** automatic (§3.6): a resolved fact carries unbounded evidence counts, and $\gamma\cdot\infty = \infty$, so it never forgets.
+
+The half-life $h$ is **not universal** — a regulatory rumour goes stale in days, a structural macro thesis over months — so "how fast does news *of this kind* age" is a worldview judgment and $h$ is a **mandate parameter** (a property of the reading map $f$), exactly like the source reliabilities of §1.4.4. As a core we take $h$ fixed per event; the documented extension **couples $h$ to the narrative's SIR attention stage** [Shiller 2019], decay *accelerating* once the narrative is past its prevalence peak.
+
+### 4.2 Stability under decay
+
+Decay supplies a restoring force, and it alone is enough to make the belief dynamics provably stable. Treat one update tick as a map $T$ on the opinion: relax by decay (Def 13), then fuse the tick's exogenous evidence (Defs 7–9).
+
+**Proposition 6 (Stability under decay).** The tick map $T = (\text{decay}) \circ (\text{fuse exogenous evidence})$ is a **contraction**: the decay step contracts with factor $\gamma < 1$, and fusion of bounded exogenous evidence is non-expansive, so $T$ contracts with factor $\le \gamma$. By the Banach fixed-point theorem it has a **unique fixed point to which every trajectory converges** — no cycles, no blow-up. Under *no* exogenous evidence the fixed point is the vacuous opinion ($u=1$, $P=a$). Under a steady exogenous inflow that would add conviction at rate $e$ against a decay rate $\delta = 1 - \gamma$, the steady state balances learning against forgetting, $\delta\cdot C^\ast = e$, i.e. $C^\ast \approx e/\delta$ (clipped to $[0,1)$). $\blacksquare$
+
+The fixed point is the interpretable gem: **sustained conviction is the ratio of evidence inflow to forgetting rate.** Feed the narrative faster, or let it age slower, and steady conviction rises; stop feeding it and it reverts to the prior. Shiller's dictum that narratives must be *retold* to survive is recovered here as a fixed-point condition, not a metaphor.
+
+> *Note.* Once the narrative is **expressed in a market**, a second, *destabilizing* force appears — the belief↔price reflexive loop — which can overwhelm this contraction and produce bubbles. That analysis (self-impact correction, loss of contraction, the bubble/bust) needs the market layer and is developed in future work. Within the pure belief calculus, decay alone guarantees stability.
+
+### 4.3 What the framework closes
+
+Every claim and objective the **core theory** set itself in §1.7 is discharged: **Claim 1** by the regime separation of §1.6, **Claim 2** by the two-dimensional opinion of Part II, **Claim 3** by the structural propagation of Part III, and the **redundancy half of Claim 5** by the observation-keyed fusion of §3.3. The objectives are met in turn: representational adequacy (Def 1), epistemic coherence (Part II), structural fidelity (Part III), the **decay half** of dynamic stability (Proposition 6), and falsifiability (the event-study and abnormal-return tests the framework invites throughout). The narrative is, as claimed, a **fully computable belief object**: representable, updatable against evidence, propagating through its causal structure, and stable under its own forgetting. The market-facing remainder — expression, fidelity, sizing, and the price-feedback half of Claim 5 — is the subject of future work on the market layer.
+
+## References
+
+- Alchourrón, C. E., Gärdenfors, P., & Makinson, D. (1985). On the logic of theory change: Partial meet contraction and revision functions. *Journal of Symbolic Logic*, 50(2), 510–530.
+- Bar-Hillel, M. (1980). The base-rate fallacy in probability judgments. *Acta Psychologica*, 44(3), 211–233.
+- Baron, R. M., & Kenny, D. A. (1986). The moderator–mediator variable distinction in social psychological research. *Journal of Personality and Social Psychology*, 51(6), 1173–1182.
+- Barthes, R. (1966). Introduction to the structural analysis of narratives. *Communications*, 8, 1–27.
+- Beckert, J. (2016). *Imagined Futures: Fictional Expectations and Capitalist Dynamics.* Harvard University Press.
+- Chatman, S. (1978). *Story and Discourse: Narrative Structure in Fiction and Film.* Cornell University Press.
+- Ellsberg, D. (1961). Risk, ambiguity, and the Savage axioms. *Quarterly Journal of Economics*, 75(4), 643–669.
+- Johnson, S. G. B., Bilovich, A., & Tuckett, D. (2023). Conviction Narrative Theory: A theory of choice under radical uncertainty. *Behavioral and Brain Sciences.*
+- Jøsang, A. (2001). A logic for uncertain probabilities. *International Journal of Uncertainty, Fuzziness and Knowledge-Based Systems*, 9(3), 279–311.
+- Jøsang, A. (2016). *Subjective Logic: A Formalism for Reasoning Under Uncertainty.* Springer.
+- Jøsang, A., Wang, D., & Zhang, J. (2017). Multi-source fusion in subjective logic. *Proceedings of the 20th International Conference on Information Fusion (FUSION).*
+- Kahneman, D., & Tversky, A. (1973). On the psychology of prediction. *Psychological Review*, 80(4), 237–251.
+- Knight, F. H. (1921). *Risk, Uncertainty and Profit.* Houghton Mifflin.
+- Laplace, P. S. (1814/1951). *A Philosophical Essay on Probabilities.* Dover.
+- Pearl, J. (1988). *Probabilistic Reasoning in Intelligent Systems.* Morgan Kaufmann.
+- Pearl, J. (2001). Direct and indirect effects. *Proceedings of the 17th Conference on Uncertainty in Artificial Intelligence (UAI)*, 411–420.
+- Reichenbach, H. (1949). *The Theory of Probability.* University of California Press.
+- Shiller, R. J. (2017). Narrative economics. *American Economic Review*, 107(4), 967–1004.
+- Shiller, R. J. (2019). *Narrative Economics: How Stories Go Viral and Drive Major Economic Events.* Princeton University Press.
+- Soros, G. (1987). *The Alchemy of Finance.* Simon & Schuster. (Cited for reflexivity; the full reflexivity treatment is left to future work.)
+- Tuckett, D., & Nikolic, M. (2017). The role of conviction and narrative in decision-making under radical uncertainty. *Theory & Psychology*, 27(4), 501–523.
+- Zacks, J. M., & Tversky, B. (2001). Event structure in perception and conception. *Psychological Bulletin*, 127(1), 3–21.
