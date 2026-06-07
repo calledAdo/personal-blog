@@ -22,3 +22,10 @@ pnpm-debug.log*
 
 # jetbrains setting folder
 .idea/
+
+# claude code local config & memory
+.claude/
+
+# working drafts (not published)
+THEORY_FRAMEWORK_DRAFT.md
+*_DRAFT.md
