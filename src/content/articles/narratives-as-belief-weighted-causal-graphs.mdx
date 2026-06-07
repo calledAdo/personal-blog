@@ -604,7 +604,7 @@ This also powers "today's event is tomorrow's signal": a resolving _parent_ abso
 
 **Practical (pre-resolution) boundary.** Short of the oracle firing, an event is treated as effectively resolved once its opinion crosses a boundary — high projected probability _and_ high conviction together, $P \ge 0.95$ with $C \ge 0.85$ (true), or $P \le 0.05$ with $C \ge 0.85$ (false). Requiring _both_ is the operational payoff of the two-dimensional belief: a high $P$ riding on low conviction does **not** resolve, blocking premature closure on thin evidence.
 
-**Contraction.** A narrative may carry a designated **failure condition** $F$ — typically the resolution of one of its failure events $z \in Z^-$ to the value that triggers failure (true or false). When evidence for $z$ confirms $F$, clearing a strict gate (high reliability and high committed belief), the narrative is invalidated and undergoes **epistemic contraction** in the sense of AGM belief revision [Alchourrón, Gärdenfors & Makinson 1985]: every non-resolved event has its learned masses withdrawn,
+**Contraction.** A narrative may carry a designated **failure condition** $F$ defined on one of its failure events $z \in Z^-$ — either _$z$ resolves true_ or _$z$ resolves false_, whichever direction spells failure for the thesis. When evidence for $z$ confirms $F$, clearing a strict gate (high reliability and high committed belief), the narrative is invalidated and undergoes **epistemic contraction** in the sense of AGM belief revision [Alchourrón, Gärdenfors & Makinson 1985]: every non-resolved event has its learned masses withdrawn,
 
 $$(b, d, u) \leftarrow (0, 0, 1), \qquad \text{so} \quad P \leftarrow a, \quad C \leftarrow 0,$$
 
