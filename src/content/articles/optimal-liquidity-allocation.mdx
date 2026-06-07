@@ -16,7 +16,7 @@ title: Yield Slippage and the Equimarginal Allocation of Capital Across Decentra
 
 This article investigates the optimization of capital distribution across Decentralized Lending Protocols (DLPs) to maximize aggregate portfolio yield. In decentralized finance, interest rates are endogenous functions of pool utilization; consequently, large capital injections dilute the effective interest rate—a phenomenon we term _yield slippage_.
 
-We formalize a unified yield function that aggregates supply interest, token incentives (priced via a scalar $\mu$), and a structural risk parameter $\Psi$ introduced to mark the conceptual location of protocol risk in the framework. The optimization itself is solved under the assumption of _risk-free_ markets ($\Psi = 0$); a full risk-aware treatment is deferred to future work. By defining a Net Yield Function and applying a constrained optimization framework, we derive the equilibrium condition where the marginal yield is equalized across all active pools.
+We formalize a unified yield function that aggregates supply interest, token incentives (priced via a scalar $\mu$), and a structural risk parameter $\Psi$ introduced to mark the conceptual location of protocol risk in the framework. The optimization itself is solved under the assumption of _risk-free_ markets ($\Psi = 0$); a full risk-aware treatment is deferred to future work. By defining a Net Yield Function and applying a constrained optimization framework, we derive the equilibrium condition where the marginal yield is equalized across all active pools. Under a diminishing-returns assumption, this equimarginal state is the unique global optimum.
 
 ## Introduction
 
@@ -26,12 +26,12 @@ Lenders who supply digital assets to these protocols are referred to as _Liquidi
 
 To address this, newer protocols utilize isolated markets where each pool accepts only one specific asset as collateral. While this limits contagion risk, it leads to liquidity fragmentation. DLPs such as [Morpho](https://morpho.org/) and [Euler Finance](https://www.euler.finance/) solve this by layering _vaults_ on top of isolated markets. In this system, Lenders deposit capital into a single vault, and professional risk strategists, known as _Risk Curators_, strategically deploy this capital across multiple pools to optimize yield while minimizing exposure to tail risks.
 
-A key challenge for vault risk curators is the _yield slippage effect_. In DLPs, the Annual Percentage Yield (APY) of a pool is a direct function of pool utilization. When a large deposit increases the pool supply, utilization—defined as the ratio of borrowed capital to total supplied capital—mechanically falls, causing the effective interest rate to decline. Consequently, a naive strategy that chases the highest instantaneous APY can produce suboptimal returns when the deployed capital is large enough to materially dilute the pool's yield dynamics.
+A key challenge for vault risk curators is the _yield slippage effect_. In DLPs, the Annual Percentage Yield (APY) of a pool is a direct function of pool utilization. When a large deposit increases the pool supply, utilization—defined as the ratio of borrowed capital to total supplied capital—mechanically falls, causing the effective interest rate to decline. Consequently, a naive strategy that chases the highest instantaneous APY can produce suboptimal returns when the deployed capital is large enough to materially dilute the pool's yield.
 
 This article develops a static, single-period model for capital allocation and rebalancing across lending pools. Our contributions are threefold:
 
 1. **Unified Yield Framework:** We formalize a comprehensive yield model that aggregates Supply Yield, Token Incentives (priced via a custom scalar $\mu$), and a placeholder for Protocol Risk (via a parameter $\Psi$). Risk is introduced structurally; the optimization is solved under risk-free markets, with a full risk-aware treatment left for future work.
-2. __Marginal Yield Derivation:__ We define the _Yield Slippage Effect_ and derive an explicit closed-form decomposition of the __Marginal Yield__ $M_i(x_i)$ of a deposit. This decomposition quantifies the endogenous dilution of both interest rates and incentive rewards caused by large capital injections.
+2. **Marginal Yield Derivation:** We define the _Yield Slippage Effect_ and derive an explicit closed-form decomposition of the **Marginal Yield** $M_i(x_i)$ of a deposit. This decomposition quantifies the endogenous dilution of both interest rates and incentive rewards caused by large capital injections.
 3. **Equimarginal Equilibrium:** Under a Diminishing Marginal Returns assumption, we establish that the Karush–Kuhn–Tucker (KKT) conditions for the constrained maximization problem are both necessary and sufficient, and that the unique global optimum is characterized by equalization of the Marginal Yield across all active pools.
 
 ## Pools
@@ -58,9 +58,9 @@ These three vectors are aggregated into a single scalar **Risk Parameter** $\Psi
 
 ## Principal and Accrued Balance
 
-__Definition (Principal Balance).__ A Lender's _Principal Balance_ at time $t$, denoted by $A_t$, is the capital basis upon which interest is calculated.
+**Definition (Principal Balance).** A Lender's _Principal Balance_ at time $t$, denoted by $A_t$, is the capital basis upon which interest is calculated.
 
-__Definition (Accrued Balance).__ A Lender's _Accrued Balance_ at time $t$, denoted by $L_t$, is the sum of the Principal Balance and the net value $\Delta A_t$ accrued over the interval $[t_0, t]$ (comprising interest, priced incentives, and risk cost; decomposed explicitly in the [Yield Decomposition](#yield-decomposition) section):
+**Definition (Accrued Balance).** A Lender's _Accrued Balance_ at time $t$, denoted by $L_t$, is the sum of the Principal Balance and the net value $\Delta A_t$ accrued over the interval $[t_0, t]$ (comprising interest, priced incentives, and risk cost; decomposed explicitly in the [Yield Decomposition](#yield-decomposition) section):
 
 $$
 L_t \coloneqq A_t + \Delta A_t
@@ -68,7 +68,7 @@ $$
 
 where $t_0$ denotes the time of the last _Balance Realization_ event.
 
-__Definition (Balance Realization).__ _Balance Realization_ is a discrete event at time $t$ where the Accrued Balance is converted into the new Principal Balance. This effectively resets the basis for future interest calculations ($t_0 \leftarrow t$). Specifically, the updated Principal Balance $A_{t}$ becomes:
+**Definition (Balance Realization).** _Balance Realization_ is a discrete event at time $t$ where the Accrued Balance is converted into the new Principal Balance. This effectively resets the basis for future interest calculations ($t_0 \leftarrow t$). Specifically, the updated Principal Balance $A_{t}$ becomes:
 
 $$
 A_{t} \leftarrow L_t = A_{t^-} + \Delta A_t
@@ -78,11 +78,11 @@ where $A_{t^-}$ denotes the pre-realization principal (the left-limit of $A$ at 
 
 Following this event, any interest calculation for a subsequent interval $[t, t']$ uses this updated basis.
 
-__Assumption (Principal Consistency Constraint).__ To preserve the integrity of the accrual basis, withdrawals are bounded by available principal. Any withdrawal $W$ at time $t$ either (i) is capped at the existing Principal Balance ($W \leq A_t$), leaving the accrued component unrealized and the time basis $t_0$ unchanged; or (ii) is preceded by a Balance Realization ($A_t \leftarrow L_t$, $t_0 \leftarrow t$), permitting withdrawal up to $W \leq L_t$.
+**Assumption (Principal Consistency Constraint).** To preserve the integrity of the accrual basis, withdrawals are bounded by available principal. Any withdrawal $W$ at time $t$ either (i) is capped at the existing Principal Balance ($W \leq A_t$), leaving the accrued component unrealized and the time basis $t_0$ unchanged; or (ii) is preceded by a Balance Realization ($A_t \leftarrow L_t$, $t_0 \leftarrow t$), permitting withdrawal up to $W \leq L_t$.
 
 ## Pool Yield
 
-__Definition (Pool Yield).__ The __Pool Yield__, denoted $Y_t$, represents the expected return per unit of principal balance over the interval $[t, t+1]$. It is defined as the conditional expected net earnings accrued by a lender, normalized by their capital basis:
+**Definition (Pool Yield).** The **Pool Yield**, denoted $Y_t$, represents the expected return per unit of principal balance over the interval $[t, t+1]$. It is defined as the conditional expected net earnings accrued by a lender, normalized by their capital basis:
 
 $$
 Y_t \coloneqq \frac{\mathbb{E}_{t} [ \Delta A_{t+1} \mid A_t ] }{A_t}
@@ -90,7 +90,7 @@ $$
 
 where $A_t$ is the lender's Principal Balance at time $t$, and $\mathbb{E}_t [ \Delta A_{t+1} \mid A_t ]$ denotes the expected net change in value due to interest, incentives, and risk factors.
 
-__Remark.__ The term $\mathbb{E}_t [ \Delta A_{t+1} \mid A_t ]$ represents the __Net Earnings__. To avoid ambiguity, this expectation is calculated under the strict assumption of __No External Flows__ (i.e., the lender does not deposit or withdraw additional capital during the interval $[t, t+1]$). Under this assumption, $\Delta A_{t+1}$ strictly quantifies the value generated by the protocol (interest + incentives − risk cost) rather than changes in user principal.
+**Remark.** The term $\mathbb{E}_t [ \Delta A_{t+1} \mid A_t ]$ represents the **Net Earnings**. To avoid ambiguity, this expectation is calculated under the strict assumption of **No External Flows** (i.e., the lender does not deposit or withdraw additional capital during the interval $[t, t+1]$). Under this assumption, $\Delta A_{t+1}$ strictly quantifies the value generated by the protocol (interest + incentives − risk cost) rather than changes in user principal.
 
 ## Yield Function
 
@@ -112,7 +112,7 @@ The snapshot Pool Yield is recovered as the special case $Y_t = Y(0)$, correspon
 
 ## Supply Yield
 
-__Definition (Supply Yield).__ The __Supply Yield__, denoted $R_t$, is defined as the interest accrued over the interval $[t, t+1]$ per unit of Principal Balance. It represents the component of pool yield derived exclusively from borrower interest payments:
+**Definition (Supply Yield).** The **Supply Yield**, denoted $R_t$, is defined as the interest accrued over the interval $[t, t+1]$ per unit of Principal Balance. It represents the component of pool yield derived exclusively from borrower interest payments:
 
 $$
 R_t \coloneqq \frac{\Delta L_{t+1}}{A_t}
@@ -123,12 +123,12 @@ where $A_t$ is the lender's Principal Balance at time $t$, and $\Delta L_{t+1}$ 
 **Definition (Supply Yield Function).** Analogously, the **Supply Yield Function** $R(x)$ is defined as:
 
 $$
-R(x) = \frac{\Delta L(x)}{A + x}
+R(x) = \frac{\Delta L(A + x)}{A + x}
 $$
 
-where $\Delta L(x)$ denotes the effective interest accrued over $[t, t+1]$ given the adjusted principal basis $(A + x)$.
+where $\Delta L(A + x)$ denotes the effective interest accrued over $[t, t+1]$ given the adjusted principal basis $(A + x)$.
 
-__Remark.__ Both $Y(x)$ and $R(x)$ are strictly decreasing, positive-valued functions due to the _Yield Slippage Effect_ defined below.
+**Remark.** Both $Y(x)$ and $R(x)$ are strictly decreasing, positive-valued functions due to the _Yield Slippage Effect_ defined below.
 
 **Definition (Yield Slippage Effect).** The **Yield Slippage Effect** is the endogenous dilution of the per-unit yield with respect to capital injection: formally, the property that
 
@@ -175,7 +175,7 @@ which is manifestly strictly decreasing in $x$, recovering the Yield Slippage Ef
 
 ## Incentive Function
 
-__Definition (Pool Incentive).__ For incentivized pools, we define the __Pool Incentive__ at time $t$, denoted $K_t$, as the quantity of the __Incentive Asset__ earned per unit of Principal Balance over the interval $[t, t+1]$:
+**Definition (Pool Incentive).** For incentivized pools, we define the **Pool Incentive** at time $t$, denoted $K_t$, as the quantity of the **Incentive Asset** earned per unit of Principal Balance over the interval $[t, t+1]$:
 
 $$
 K_t \coloneqq \frac{I(A, t)}{A}
@@ -219,7 +219,7 @@ $$
 V_{\text{incentive}} = \mu \cdot I(A+x, t) = \mu \cdot K(x) \cdot (A + x)
 $$
 
-__Remark.__ The scalar $\mu$ represents an _effective execution price_ for the accrued incentives. Relying solely on the spot price at time $t$ may be insufficient due to volatility during the accrual interval. In practice, $\mu$ may represent a time-weighted average price (TWAP) or a hedged price secured via an external derivatives market.
+**Remark.** The scalar $\mu$ represents an _effective execution price_ for the accrued incentives. Relying solely on the spot price at time $t$ may be insufficient due to volatility during the accrual interval. In practice, $\mu$ may represent a time-weighted average price (TWAP) or a hedged price secured via an external derivatives market.
 
 **Assumption (Incentive Price Exogeneity).** We treat $\mu$ as exogenous to the lender's position size: the realized execution price of the incentive token is independent of the quantity $I(A + x, t)$ that the lender must liquidate. This is a deliberate limitation. The framework captures endogenous dilution on both the supply rate ($R(x)$) and the incentive emission share ($K(x)$), but does not capture market-impact slippage from selling the accrued incentive token into its secondary market. For modest positions—where the accrued incentive quantity is small relative to the depth of the incentive token's market—the assumption is innocuous. For vault-scale operations it may not be, and a position-dependent execution price $\mu(I)$ would be required. This extension is deferred to future work.
 
@@ -230,7 +230,7 @@ The expected net earnings for a Principal Balance $A$ over the interval $[t, t+1
 First, considering only the gross yield components:
 
 $$
-\mathbb{E}_t [ \Delta A \mid A ]_{\text{gross}} = \Delta L(A) + \mu \cdot I(A, t)
+\mathbb{E}_t [ \Delta A_{t+1} \mid A ]_{\text{gross}} = \Delta L(A) + \mu \cdot I(A, t)
 $$
 
 where $\Delta L(A)$ is the accrued interest and $I(A,t)$ is the quantity of incentive tokens.
@@ -238,15 +238,15 @@ where $\Delta L(A)$ is the accrued interest and $I(A,t)$ is the quantity of ince
 To account for protocol safety, we introduce a **Risk Parameter** $\Psi$, a non-negative scalar representing the expected loss per unit of capital over the interval (e.g., due to smart contract failure or bad debt). The **Net Expected Earnings** becomes:
 
 $$
-\mathbb{E}_t [ \Delta A \mid A ] = \underbrace{\Delta L(A)}_{\text{Interest}} + \underbrace{\mu \cdot I(A, t)}_{\text{Incentives}} - \underbrace{A \cdot \Psi}_{\text{Risk Cost}}
+\mathbb{E}_t [ \Delta A_{t+1} \mid A ] = \underbrace{\Delta L(A)}_{\text{Interest}} + \underbrace{\mu \cdot I(A, t)}_{\text{Incentives}} - \underbrace{A \cdot \Psi}_{\text{Risk Cost}}
 $$
 
 **Remark.** The parameter $\Psi$ serves as a rigorous measure of the "cost of safety." For theoretical Risk-Free markets, $\Psi = 0$. For risky markets, $\Psi > 0$, effectively acting as a discount rate on the raw APY.
 
-__Remark (Notation: $\Delta A$ vs $\Delta L$).__ It is important to distinguish the two accrual quantities used throughout this article. The increment $\Delta L_{t+1}$ denotes the _interest_ component alone—the deterministic supply-yield contribution—while $\Delta A_{t+1}$ denotes the _net value_ accrued, comprising interest, priced incentives, and risk cost. They are related by the identity
+**Remark (Notation: $\Delta A$ vs $\Delta L$).** It is important to distinguish the two accrual quantities used throughout this article. The increment $\Delta L_{t+1}$ denotes the _interest_ component alone—the deterministic supply-yield contribution—while $\Delta A_{t+1}$ denotes the _net value_ accrued, comprising interest, priced incentives, and risk cost. Despite the shared letter, $\Delta L$ is **not** the first difference of the Accrued-Balance stock $L_t = A_t + \Delta A_t$—the increment of that stock is precisely the net value $\Delta A$—so $\Delta L$ should be read as a single symbol for the interest flow. The two are related by the identity
 
 $$
-\mathbb{E}_t [\Delta A \mid A] = \Delta L(A) + \mu \cdot I(A, t) - A \cdot \Psi.
+\mathbb{E}_t [\Delta A_{t+1} \mid A] = \Delta L(A) + \mu \cdot I(A, t) - A \cdot \Psi.
 $$
 
 In the special case of risk-free, non-incentivized markets ($\Psi = 0$, $\mu \cdot I = 0$), the two quantities coincide.
@@ -259,7 +259,7 @@ $$
 Y(x) = R(x) + \mu \cdot K(x) - \Psi
 $$
 
-__Proof.__ By definition, $(A + x) \cdot Y(x) = \mathbb{E}_t [ \Delta A \mid A+x ]$. Expanding the terms:
+**Proof.** By definition, $(A + x) \cdot Y(x) = \mathbb{E}_t [ \Delta A \mid A+x ]$. Expanding the terms:
 
 $$
 \begin{aligned}
@@ -282,15 +282,15 @@ $$
 Y_i(x_i) = R_i(x_i) + \mu_i \cdot K_i(x_i) - \Psi_i.
 $$
 
-Consider a portfolio with capital allocation $\mathbf{A} = (A_1, A_2, \dots, A_n)$ across $n$ pools __denominated in the same base asset__ at time $t$. Let $\mathbb{E}_t [ \Delta A_i \mid A_i]$ denote the expected earnings for the $i$-th pool over the interval $[t, t+1]$.
+Consider a portfolio with capital allocation $\mathbf{A} = (A_1, A_2, \dots, A_n)$ across $n$ pools **denominated in the same base asset** at time $t$. Let $\mathbb{E}_t [ \Delta A_i \mid A_i]$ denote the expected earnings for the $i$-th pool over the interval $[t, t+1]$.
 
-The __Net Yield__ of the portfolio, denoted $Y_{\text{net}}$, is the weighted average of the individual pool yields:
+The **Net Yield** of the portfolio, denoted $Y_{\text{net}}$, is the weighted average of the individual pool yields:
 
 $$
 Y_{\text{net}} = \frac{ \sum_{i=1}^{n} \mathbb{E}_{t} [ \Delta A_i \mid A_i]}{\sum_{i=1}^{n}A_i}
 $$
 
-__Definition (Net Yield Function).__ Suppose a total capital amount $W$ of the base asset is distributed across the pools via a vector of capital changes $\mathbf{x} = (x_1, x_2, \dots, x_n)$ such that $\sum_{i=1}^n x_i = W$. We define the __Net Yield Function__, denoted $F_t(\mathbf{x})$, as the effective yield of the portfolio immediately following these discrete changes:
+**Definition (Net Yield Function).** Suppose a total capital amount $W$ of the base asset is distributed across the pools via a vector of capital changes $\mathbf{x} = (x_1, x_2, \dots, x_n)$ such that $\sum_{i=1}^n x_i = W$. We define the **Net Yield Function**, denoted $F_t(\mathbf{x})$, as the effective yield of the portfolio immediately following these discrete changes:
 
 $$
 F_t(\mathbf{x}) = \frac{ \sum_{i=1}^{n} \mathbb{E}_t [ \Delta A_i \mid A_i + x_i]}{\sum_{i=1}^{n} (A_i+ x_i)}
@@ -298,13 +298,13 @@ $$
 
 This function evaluates the portfolio efficiency for any specific distribution $\mathbf{x}$ of the total capital $W$. The pre-injection Net Yield is recovered as the special case $Y_{\text{net}} = F_t(\mathbf{0})$.
 
-__Remark (Equivalence with Total Earnings).__ Under the Budget Constraint $\sum_i x_i = W$, the denominator of $F_t$ collapses to a constant independent of the specific allocation:
+**Remark (Equivalence with Total Earnings).** Under the Budget Constraint $\sum_i x_i = W$, the denominator of $F_t$ collapses to a constant independent of the specific allocation:
 
 $$
 \sum_{i=1}^{n}(A_i + x_i) = \sum_{i=1}^{n} A_i + W.
 $$
 
-Consequently, the rate-form objective $F_t(\mathbf{x})$ and the __Total Expected Earnings__ $\mathcal{E}(\mathbf{x}) \coloneqq \sum_i \mathbb{E}_t [\Delta A_i \mid A_i + x_i]$ share the same argmax:
+Consequently, the rate-form objective $F_t(\mathbf{x})$ and the **Total Expected Earnings** $\mathcal{E}(\mathbf{x}) \coloneqq \sum_i \mathbb{E}_t [\Delta A_i \mid A_i + x_i]$ share the same argmax:
 
 $$
 \arg\max_{\mathbf{x}} F_t(\mathbf{x}) = \arg\max_{\mathbf{x}} \mathcal{E}(\mathbf{x}).
@@ -314,13 +314,13 @@ In the optimization that follows we work with $\mathcal{E}$ for analytic conveni
 
 ## Generalized Optimal Capital Allocation
 
-__Assumption (Risk-Free Markets).__ For the remainder of this article we restrict attention to _risk-free_ pools, formally $\Psi_i = 0$ for all $i$. The risk parameter $\Psi$ is retained as a structural placeholder in the decomposition of $Y(x)$ to mark the conceptual location of protocol risk in the framework. Modeling the functional form and dynamics of $\Psi$—including its interaction with utilization, leverage cycles, and inter-pool contagion—is non-trivial and is left to future work.
+**Assumption (Risk-Free Markets).** For the remainder of this article we restrict attention to _risk-free_ pools, formally $\Psi_i = 0$ for all $i$. The risk parameter $\Psi$ is retained as a structural placeholder in the decomposition of $Y(x)$ to mark the conceptual location of protocol risk in the framework. Modeling the functional form and dynamics of $\Psi$—including its interaction with utilization, leverage cycles, and inter-pool contagion—is non-trivial and is left to future work.
 
-__Assumption (Frictionless Rebalancing).__ We abstract from the on-chain transaction costs of executing the allocation $\mathbf{x}$—gas fees, MEV exposure, and any base-asset swap slippage incurred on entry or exit. Real-world implementations will require a _no-trade band_ around the equimarginal equilibrium to suppress rebalances whose expected gain is dominated by the cost of the transaction. We defer this extension to future work.
+**Assumption (Frictionless Rebalancing).** We abstract from the on-chain transaction costs of executing the allocation $\mathbf{x}$—gas fees, MEV exposure, and any base-asset swap slippage incurred on entry or exit. Real-world implementations will require a _no-trade band_ around the equimarginal equilibrium to suppress rebalances whose expected gain is dominated by the cost of the transaction. We defer this extension to future work.
 
 We generalize the optimization problem by defining $W$ as the **Net Portfolio Capital Change**. This allows us to model capital injections ($W > 0$), neutral rebalancing ($W = 0$), and withdrawals ($W < 0$) using a single unified framework.
 
-The objective is to find the vector of individual allocations $\mathbf{x} = (x_1, \dots, x_n)$ that maximizes the __Total Expected Earnings__ of the final portfolio state. Under the Risk-Free Markets assumption, the objective function is:
+The objective is to find the vector of individual allocations $\mathbf{x} = (x_1, \dots, x_n)$ that maximizes the **Total Expected Earnings** of the final portfolio state. Under the Risk-Free Markets assumption, the objective function is:
 
 $$
 \text{Maximize } \mathcal{E}(\mathbf{x}) = \sum_{i=1}^{n} (A_i + x_i)\left[ R_i(x_i) + \mu_i \cdot K_i(x_i) \right]
@@ -330,19 +330,19 @@ $$
 
 The problem is subject to two primary constraints:
 
-1. __Budget Constraint:__ The sum of individual changes must equal the net capital change.
+1. **Budget Constraint:** The sum of individual changes must equal the net capital change.
    $$
    g(\mathbf{x}) = W - \sum_{i=1}^{n}x_i = 0
    $$
-2. __Solvency Constraint:__ No pool can have a negative balance.
+2. **Solvency Constraint:** No pool can have a negative balance.
    $$
    x_i \geq -A_i \quad \forall i
    $$
 
 Based on the value of $W$, the optimization naturally adapts to three distinct modes:
 
-- __Capital Injection ($W > 0$):__ New capital enters the portfolio. The solver distributes $W$ to pools with the highest Marginal Yields, potentially pulling capital from lower-performing pools ($x_j < 0$) to boost best performers (Hybrid Injection/Rebalancing).
-- __Pure Rebalancing ($W = 0$):__ No external capital is added. The solver moves capital from low-marginal-yield pools ($x_j < 0$) to high-marginal-yield pools ($x_i > 0$) until equilibrium is reached.
+- **Capital Injection ($W > 0$):** New capital enters the portfolio. The solver distributes $W$ to pools with the highest Marginal Yields, potentially pulling capital from lower-performing pools ($x_j < 0$) to boost best performers (Hybrid Injection/Rebalancing).
+- **Pure Rebalancing ($W = 0$):** No external capital is added. The solver moves capital from low-marginal-yield pools ($x_j < 0$) to high-marginal-yield pools ($x_i > 0$) until equilibrium is reached.
 - **Capital Withdrawal ($W < 0$):** Capital leaves the portfolio. The solver removes liquidity from pools with the lowest Marginal Yields first to minimize the loss of total earnings.
 
 ### Optimization Framework (KKT Conditions)
@@ -369,26 +369,26 @@ $$
 
 The necessary conditions for optimality are:
 
-1. __Stationarity:__
+1. **Stationarity:**
    $$
    \frac{\partial \mathcal{L}}{\partial x_i} = \frac{\partial \mathcal{E}}{\partial x_i} - \lambda + \gamma_i = 0 \implies \frac{\partial \mathcal{E}}{\partial x_i} = \lambda - \gamma_i
    $$
-2. __Primal Feasibility:__
+2. **Primal Feasibility:**
    $$
    W = \sum x_i \quad \text{and} \quad A_i + x_i \geq 0
    $$
-3. __Dual Feasibility:__
+3. **Dual Feasibility:**
    $$
    \gamma_i \geq 0
    $$
-4. __Complementary Slackness:__
+4. **Complementary Slackness:**
    $$
    \gamma_i (A_i + x_i) = 0
    $$
 
 ### Derivation of Marginal Yield
 
-We define the term $\frac{\partial \mathcal{E}}{\partial x_i}$ as the __Marginal Yield__ $M_i(x_i)$. By applying the product rule to the earnings term $(A_i + x_i)Y_i(x_i)$, we explicitly derive:
+We define the term $\frac{\partial \mathcal{E}}{\partial x_i}$ as the **Marginal Yield** $M_i(x_i)$. By applying the product rule to the earnings term $(A_i + x_i)Y_i(x_i)$, we explicitly derive:
 
 $$
 \begin{aligned}
@@ -402,19 +402,19 @@ $$
 
 The KKT conditions above are *necessary* for stationarity. To ensure that a stationary point is a **global maximum**, we impose the following structural assumption.
 
-__Assumption (Diminishing Marginal Returns).__ For each pool $i$, the per-pool earnings function $E_i(x_i) \coloneqq (A_i + x_i)\, Y_i(x_i)$ is strictly concave on the feasible region. Equivalently, the Marginal Yield is strictly decreasing in $x_i$:
+**Assumption (Diminishing Marginal Returns).** For each pool $i$, the per-pool earnings function $E_i(x_i) \coloneqq (A_i + x_i)\, Y_i(x_i)$ is strictly concave on the feasible region. Equivalently, the Marginal Yield is strictly decreasing in $x_i$:
 
 $$
 M'_i(x_i) < 0 \quad \forall i, \, \forall x_i \in [-A_i, \infty)
 $$
 
-__Remark.__ This assumption is the central structural requirement of the framework. It captures the economic intuition that each additional unit of capital is _less productive_ than the last, and it can be verified directly for the kinked rate model introduced previously, provided the lender's existing principal $A_i$ is small relative to the total pool supply $S_i$—the typical regime of operation for an individual liquidity provider. Under this assumption, the aggregate objective $\mathcal{E}(\mathbf{x})$ is a sum of concave functions, the KKT conditions are both necessary and sufficient, and the equimarginal condition $M_i(x_i) = \lambda$ identifies the unique global optimum.
+**Remark.** This assumption is the central structural requirement of the framework. It captures the economic intuition that each additional unit of capital is _less productive_ than the last, and it can be verified directly for the kinked rate model introduced previously. The Single-Regime Operation assumption already confines the capital change $x_i$ to a range over which the per-pool earnings $(A_i + x_i)\, R_i(x_i)$ remain strictly concave, so concavity holds throughout the feasible region—the typical regime of operation for an individual liquidity provider. Under this assumption, the aggregate objective $\mathcal{E}(\mathbf{x})$ is a sum of concave functions, the KKT conditions are both necessary and sufficient, and the equimarginal condition $M_i(x_i) = \lambda$ identifies the unique global optimum.
 
 ### Interpretation: The Threshold Logic
 
 The KKT conditions reveal two distinct regimes for optimal allocation:
 
-- __Regime 1: Active Pools (Interior Solutions).__ For any pool $i$ that maintains a positive balance ($A_i + x_i > 0$), the Complementary Slackness condition requires $\gamma_i = 0$. Substituting this into the Stationarity condition yields:
+- **Regime 1: Active Pools (Interior Solutions).** For any pool $i$ that maintains a positive balance ($A_i + x_i > 0$), the Complementary Slackness condition requires $\gamma_i = 0$. Substituting this into the Stationarity condition yields:
 
    $$
    M_i(x_i) = \lambda
@@ -422,11 +422,11 @@ The KKT conditions reveal two distinct regimes for optimal allocation:
 
    _Conclusion: All active pools must share an identical Marginal Yield equal to the portfolio shadow price $\lambda$._
 
-- __Regime 2: Empty Pools (Corner Solutions).__ For any pool $j$ that is fully drained ($A_j + x_j = 0$), the constraint is active, allowing $\gamma_j \geq 0$. This implies:
+- **Regime 2: Empty Pools (Corner Solutions).** For any pool $j$ that is fully drained ($A_j + x_j = 0$), the constraint is active, allowing $\gamma_j \geq 0$. This implies:
    $$
    M_j(x_j) = \lambda - \gamma_j \implies M_j(-A_j) \leq \lambda
    $$
-   _Conclusion: A pool is emptied if and only if its maximum possible marginal yield (at zero balance) is strictly less than or equal to the portfolio equilibrium $\lambda$. Effectively, it is "too expensive" to keep active._
+   _Conclusion: A pool is emptied precisely when its maximum possible marginal yield (at zero balance) is at most the portfolio equilibrium $\lambda$; the boundary case $M_j(-A_j) = \lambda$ marks an indifferent pool, poised on the threshold of activation. Effectively, such a pool is "too expensive" to keep active._
 
 **Remark.** This result formally validates the "Water-Filling" heuristic: Capital flows into the highest-yield pools first, filling them until their marginal yield dilutes to match the next best pool. Pools with yield curves strictly below the equilibrium threshold $\lambda$ receive zero allocation.
 
